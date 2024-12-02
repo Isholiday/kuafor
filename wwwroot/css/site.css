@@ -1,0 +1,17 @@
+@font-face {
+  font-family: "comfortaa";
+  src: url("../fonts/comfortaa.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  background-color: #303030;
+  font-family: "comfortaa";
+}
+
+html {
+  font-size: 14px;
+  position: relative;
+  min-height: 100%;
+}
