@@ -1,3 +1,4 @@
+@model backend.Models.User
 @{
   ViewData["Title"] = "Register";
 }
@@ -13,30 +14,50 @@
             </div>
             <div class="col-md-6 col-lg-7 d-flex align-items-center">
               <div class="card-body p-4 p-lg-5 text-light">
-                <form method="post">
+                <form asp-action="Register" asp-controller="Account" method="post">
                   <h5 class="fw-normal mb-4 pb-3" style="letter-spacing: 1px;">Create your account</h5>
+
                   <div class="form-outline mb-4">
-                    <label class="form-label" for="email">Email</label>
-                    <input type="email" id="email" class="form-control form-control-lg" required />
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control form-control-lg" />
+                    <div class="mt-2" style="height: 2px;">
+                      <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
                   </div>
+
                   <div class="form-outline mb-4">
-                    <label class="form-label" for="username">Username</label>
-                    <input type="text" id="username" class="form-control form-control-lg" required />
+                    <label asp-for="Username" class="form-label"></label>
+                    <input asp-for="Username" class="form-control form-control-lg" />
+                    <div class="mt-2" style="height: 2px;">
+                      <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
                   </div>
+
                   <div class="form-outline mb-4">
-                    <label class="form-label" for="password">Password</label>
-                    <input type="password" id="password" class="form-control form-control-lg" required />
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" id="password" type="password" class="form-control form-control-lg" />
+                    <div class="mt-2" style="height: 2px;">
+                      <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
                   </div>
+
                   <div class="form-outline mb-4">
                     <label class="form-label" for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" class="form-control form-control-lg" required />
+                    <input id="confirmPassword" type="password" class="form-control form-control-lg" />
+                    <div class="mt-2" style="height: 2px;">
+                      <span class="text-danger" id="confirmPasswordError"></span>
+                    </div>
                   </div>
-                  <div class="pt-1 mb-4">
-                    <button class="btn btn-lg w-100" style="background-color: #EB975E;" type="submit">Register</button>
+
+                  <div class="pt-1">
+                    <button class=" btn btn-lg w-100" style="background-color: #EB975E;" type="submit">Register</button>
                   </div>
-                  <p class="mb-5 pb-lg-2 text-light">Already have an account?
-                    <a asp-controller="account" asp-action="login" style="color: #6e78e0;">Sign in here</a>
+
+                  <p class="pb-lg-2 mt-3 text-light">Already have an account?
+                    <a asp-action="Login" asp-controller="Account" style="color: #6e78e0;">Sign in here</a>
                   </p>
+
+                  <div asp-validation-summary="ModelOnly"> </div>
                 </form>
               </div>
             </div>
@@ -46,3 +67,22 @@
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const errorMessage = document.getElementById('confirmPasswordError');
+    const form = confirmPasswordInput.closest('form');
+
+    form.addEventListener('submit', function (event) {
+      const errorSpans = form.querySelectorAll('span');
+      errorSpans.forEach(span => span.textContent = '');
+
+      if (confirmPasswordInput.value !== passwordInput.value) {
+        errorMessage.textContent = 'Passwords do not match';
+        event.preventDefault();
+      }
+    });
+  });
+</script>
