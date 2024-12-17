@@ -11,6 +11,7 @@ public class DashboardController(ApplicationDbContext context) : Controller {
         return View();
     }
 
+    [Route("/Panel")]
     public IActionResult AdminDashboard() {
         return View();
     }
