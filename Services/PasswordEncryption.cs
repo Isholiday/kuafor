@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using backend.Models;
+using backend.ViewModels;
 
 namespace backend.Services {
     public class PasswordEncryption {

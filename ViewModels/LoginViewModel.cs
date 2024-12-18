@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-namespace backend.Models;
+namespace backend.ViewModels;
 
 public class LoginViewModel {
     [Required(ErrorMessage = "Username is required.")]

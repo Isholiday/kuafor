@@ -1,0 +1,66 @@
+@model IEnumerable<backend.Models.Employee>
+
+@{
+  ViewData["Title"] = "Manage Employees";
+  Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<h1 class="text-center mt-3" style="color: #EB975E;">Employees</h1>
+
+<table class="table table-bordered table-striped text-center text-light mt-5" style="width: 80%; margin: 0 auto;">
+  <thead style="background-color: #424242;">
+    <tr>
+      <th>
+        @Html.DisplayNameFor(model => model.Name)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.Specialization)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.Skills)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.Availabilities)
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var item in Model)
+    {
+      <tr>
+        <td>
+          @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.Specialization)
+        </td>
+        <td>
+          @string.Join(", ", item.Skills!)
+        </td>
+        <td>
+          @if (item.Availabilities != null && item.Availabilities.Any())
+          {
+            @foreach (var availability in item.Availabilities)
+            {
+              <div>
+                @availability.Day: @availability.StartTime - @availability.EndTime
+              </div>
+            }
+          }
+          else
+          {
+            <span>No availability set</span>
+          }
+        </td>
+        <td>
+          <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+          <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+<p class="text-center mt-5">
+  <button asp-action="Create" class="btn btn-lg" style="background-color: #EB975E;">Create New</button>
+</p>

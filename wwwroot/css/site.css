@@ -8,10 +8,17 @@
 body {
   background-color: #303030;
   font-family: "comfortaa";
+  overflow: hidden;
 }
 
 html {
   font-size: 14px;
-  position: relative;
   min-height: 100%;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
 }

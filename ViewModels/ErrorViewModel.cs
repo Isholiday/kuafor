@@ -1,4 +1,4 @@
-namespace backend.Models;
+namespace backend.ViewModels;
 
 public class ErrorViewModel {
     public string? RequestId { get; set; }

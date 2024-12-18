@@ -20,7 +20,7 @@ namespace backend.Data {
 
             modelBuilder.Entity<Availability>()
                 .HasOne(a => a.Employee)
-                .WithMany(e => e.AvailableHours)
+                .WithMany(e => e.Availabilities)
                 .HasForeignKey(a => a.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade);
 

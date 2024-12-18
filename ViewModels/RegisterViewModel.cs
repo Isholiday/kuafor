@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-namespace backend.Models;
+namespace backend.ViewModels;
 public class RegisterViewModel {
     [Required(ErrorMessage = "Username is required.")]
     [StringLength(50, ErrorMessage = "Username cannot exceed 50 characters.")]
