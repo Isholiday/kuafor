@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using backend.Helpers;
 
 namespace backend.Models;
 
@@ -11,9 +13,11 @@ public class Employee {
     [Required]
     public string? Specialization { get; set; }
 
-    [Required]
-    public List<string>? Skills { get; set; }
+    [RequiredList(ErrorMessage = "The Skills field is required.")]
+    [Display(Name = "Skills (comma separated)")]
+    public List<string> Skills { get; set; } = [];
 
     [Required]
-    public List<Availability>? Availabilities { get; set; }
+    [JsonIgnore]
+    public List<Availability> Availabilities { get; set; } = [];
 }

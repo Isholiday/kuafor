@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace backend.Models;
 
 public class Availability {
@@ -6,5 +8,7 @@ public class Availability {
     public DayOfWeek Day { get; set; }
     public TimeSpan StartTime { get; set; }
     public TimeSpan EndTime { get; set; }
-    public required Employee Employee { get; set; }
+
+    [JsonIgnore]
+    public Employee? Employee { get; set; }
 }

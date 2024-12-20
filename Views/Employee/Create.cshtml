@@ -1,3 +1,192 @@
+@using backend.Helpers
+@model backend.Models.Employee
+
 @{
   ViewData["Title"] = "Create Employee";
 }
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-8">
+        <div class="card" style="border-radius: 1rem; background-color: #424242;">
+          <div class="card-body p-4 text-light">
+            <h4 class="mb-4 text-center" style="letter-spacing: 1px; color: #EB975E;">Create New Employee</h4>
+            <form asp-action="Create" method="post">
+              <!-- Employee Details -->
+              <div class="form-outline mb-4">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control form-control-lg" />
+                <span asp-validation-for="Name" class="text-danger mt-2"></span>
+              </div>
+
+              <div class="form-outline mb-4">
+                <label asp-for="Specialization" class="form-label"></label>
+                <input asp-for="Specialization" class="form-control form-control-lg" />
+                <span asp-validation-for="Specialization" class="text-danger mt-2"></span>
+              </div>
+
+              <div class="form-outline mb-4">
+                <label asp-for="Skills" class="form-label"></label>
+                <input asp-for="Skills" class="form-control form-control-lg" value="@Model.Skills.ToCommaString()" />
+                <span asp-validation-for="Skills" class="text-danger mt-2"></span>
+              </div>
+
+              <div class="mb-4 mt-2">
+                <span class="form-label">Availabilities</span>
+                <div id="availabilities-container" class="py-2">
+                  @for (int i = 0; i < Model.Availabilities.Count; i++)
+                  {
+                    <div class="availability-item row g-3">
+                      <div class="col-md-3">
+                        <label class="form-label">Day</label>
+                        <select class="form-select" name="Availabilities[@i].Day">
+                          @foreach (var day in Enum.GetValues(typeof(DayOfWeek)))
+                          {
+                            <option value="@day">@day</option>
+                          }
+                        </select>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Start Time</label>
+                        <input type="time" name="Availabilities[@i].StartTime" class="form-control" />
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">End Time</label>
+                        <input type="time" name="Availabilities[@i].EndTime" class="form-control" />
+                      </div>
+                      <div class="col-md-3">
+                        <button type="button" class="btn btn-danger remove-availability">
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  }
+                </div>
+                <button type="button" id="add-availability" class="btn btn-secondary mt-3">
+                  Add Availability
+                </button>
+              </div>
+
+              <div class="text-center pt-1">
+                <button class="btn btn-lg w-100" style="background-color: #EB975E;" type="submit">
+                  Create
+                </button>
+                <a asp-action="Index" class="btn btn-link mt-3" style="color: #6e78e0;">Back to List</a>
+              </div>
+
+              <div asp-validation-summary="ModelOnly" class="alert alert-danger mt-3">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  let availabilityIndex = @Model.Availabilities.Count ?? 0;
+
+  function validateTimes(startTime, endTime) {
+    return startTime && endTime && startTime < endTime;
+  }
+
+  function isDayAlreadySelected(selectedDay, currentIndex) {
+    const items = document.querySelectorAll(".availability-item select");
+    return Array.from(items).some((select, index) =>
+      index !== currentIndex && select.value === selectedDay
+    );
+  }
+
+  document.addEventListener("change", function (e) {
+    if (e.target.type === "time") {
+      const item = e.target.closest(".availability-item");
+      if (!item) return;
+
+      const startInput = item.querySelector("input[name$='.StartTime']");
+      const endInput = item.querySelector("input[name$='.EndTime']");
+
+      if (startInput.value && endInput.value && !validateTimes(startInput.value, endInput.value)) {
+        alert("Start time must be before end time.");
+        e.target.value = "";
+      }
+    }
+
+    if (e.target.name && e.target.name.endsWith(".Day")) {
+      const items = document.querySelectorAll(".availability-item");
+      const currentIndex = Array.from(items).indexOf(e.target.closest(".availability-item"));
+
+      if (isDayAlreadySelected(e.target.value, currentIndex)) {
+        alert("This day is already scheduled. Please select a different day.");
+        e.target.value = "";
+      }
+    }
+  });
+
+  document.querySelector("form").addEventListener("submit", function (e) {
+    const items = document.querySelectorAll(".availability-item");
+    let isValid = true;
+
+    items.forEach(item => {
+      const start = item.querySelector("input[name$='.StartTime']").value;
+      const end = item.querySelector("input[name$='.EndTime']").value;
+      if (!validateTimes(start, end)) {
+        isValid = false;
+      }
+    });
+
+    const days = new Set();
+    const selects = document.querySelectorAll(".availability-item select");
+    selects.forEach(select => {
+      if (select.value && days.has(select.value)) {
+        isValid = false;
+      }
+      days.add(select.value);
+    });
+
+    if (!isValid) {
+      e.preventDefault();
+      alert("Please check your availability entries for valid times and unique days.");
+    }
+  });
+
+  document.getElementById("add-availability").addEventListener("click", function () {
+    const container = document.getElementById("availabilities-container");
+    const template = `
+      <div class="availability-item row g-3 d-flex justify-content-between">
+        <div class="col-md-3">
+          <label class="form-label">Day</label>
+          <select class="form-select" name="Availabilities[${availabilityIndex}].Day">
+            <option value="">Select a day</option>
+            <option value="0">Sunday</option>
+            <option value="1">Monday</option>
+            <option value="2">Tuesday</option>
+            <option value="3">Wednesday</option>
+            <option value="4">Thursday</option>
+            <option value="5">Friday</option>
+            <option value="6">Saturday</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Start Time</label>
+          <input type="time" name="Availabilities[${availabilityIndex}].StartTime" class="form-control" required />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">End Time</label>
+          <input type="time" name="Availabilities[${availabilityIndex}].EndTime" class="form-control" required />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button type="button" class="btn btn-danger remove-availability">Remove</button>
+        </div>
+      </div>`;
+    container.insertAdjacentHTML("beforeend", template);
+    availabilityIndex++;
+  });
+
+  document.addEventListener("click", function (e) {
+    if (e.target && e.target.classList.contains("remove-availability")) {
+      e.target.closest(".availability-item").remove();
+    }
+  });
+</script>

@@ -13,6 +13,6 @@ public class ErrorController : Controller {
 
     public IActionResult NotFound(int statusCode) {
         if (statusCode == 404) return View("NotFound");
-        return View("Error");
+        return View();
     }
 }

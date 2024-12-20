@@ -18,6 +18,9 @@ html {
 }
 
 @media (max-width: 768px) {
+  html {
+    overflow: visible;
+  }
   .sidebar {
     display: none;
   }

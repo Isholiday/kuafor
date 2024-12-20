@@ -1,3 +1,35 @@
+@using backend.Helpers
+@model backend.Models.Employee
+
 @{
   ViewData["Title"] = "Delete Employee";
 }
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-8">
+        <div class="card" style="border-radius: 1rem; background-color: #424242;">
+          <div class="card-body p-4 text-light">
+            <h4 class="mb-4 text-center" style="letter-spacing: 1px; color: #EB975E;">Are you sure you want to delete
+              this employee?</h4>
+            <div class="mb-4">
+              <strong>Name:</strong> @Model.Name <br />
+              <strong>Specialization:</strong> @Model.Specialization <br />
+              <strong>Skills:</strong> @Model.Skills.ToCommaString()
+            </div>
+
+            <div class="text-center">
+              <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-warning btn-lg w-100 mt-1">Yes,
+                  Delete</button>
+              </form>
+              <a asp-action="Index" class="btn btn-danger btn-lg w-100 mt-2">Cancel</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

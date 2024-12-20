@@ -7,60 +7,66 @@
 
 <h1 class="text-center mt-3" style="color: #EB975E;">Employees</h1>
 
-<table class="table table-bordered table-striped text-center text-light mt-5" style="width: 80%; margin: 0 auto;">
-  <thead style="background-color: #424242;">
-    <tr>
-      <th>
-        @Html.DisplayNameFor(model => model.Name)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.Specialization)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.Skills)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.Availabilities)
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    @foreach (var item in Model)
-    {
+<div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+  <table class="table table-bordered text-center text-light mt-5 fs-5" style="width: 80%; margin: 0 auto;">
+    <thead style="background-color: #424242;">
       <tr>
-        <td>
-          @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.Specialization)
-        </td>
-        <td>
-          @string.Join(", ", item.Skills!)
-        </td>
-        <td>
-          @if (item.Availabilities != null && item.Availabilities.Any())
-          {
-            @foreach (var availability in item.Availabilities)
-            {
-              <div>
-                @availability.Day: @availability.StartTime - @availability.EndTime
-              </div>
-            }
-          }
-          else
-          {
-            <span>No availability set</span>
-          }
-        </td>
-        <td>
-          <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-          <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-        </td>
+        <th>Name</th>
+        <th>Specialization</th>
+        <th>Skills</th>
+        <th>Availabilities</th>
+        <th>Operations</th>
       </tr>
-    }
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      @if (Model.Any())
+      {
+        @foreach (var item in Model)
+        {
+          <tr>
+            <td>@item.Name</td>
+            <td>@item.Specialization</td>
+            <td>@string.Join(", ", item.Skills ?? new List<string>())</td>
+            <td>
+              @if (item.Availabilities != null && item.Availabilities.Any())
+              {
+                <ul class="list-unstyled mb-0">
+                  @foreach (var availability in item.Availabilities)
+                  {
+                    <li>@availability.Day: @availability.StartTime - @availability.EndTime</li>
+                  }
+                </ul>
+              }
+              else
+              {
+                <span>No availability set</span>
+              }
+            </td>
+            <td>
+              <a class="btn btn-info mt-1" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+              <a class="btn btn-danger mt-1" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+          </tr>
+        }
+      }
+      else
+      {
+        <tr>
+          <td colspan="5" class="text-center">No employees found.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
 
 <p class="text-center mt-5">
-  <button asp-action="Create" class="btn btn-lg" style="background-color: #EB975E;">Create New</button>
+  <a asp-action="Create" class="btn btn-lg" style="background-color: #EB975E;">Create New</a>
 </p>
+
+@if (TempData["SuccessMessage"] != null)
+{
+  <div class="alert alert-success alert-dismissible fade show mt-5 w-50 mx-auto" role="alert">
+  <strong>@TempData["SuccessMessage"]</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+}
