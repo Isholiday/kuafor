@@ -43,7 +43,7 @@
               }
             </td>
             <td>
-              <a class="btn btn-info mt-1" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+              <a class="btn btn-primary mt-1" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
               <a class="btn btn-danger mt-1" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
           </tr>
@@ -67,6 +67,14 @@
 {
   <div class="alert alert-success alert-dismissible fade show mt-5 w-50 mx-auto" role="alert">
   <strong>@TempData["SuccessMessage"]</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+}
+
+@if (TempData["InfoMessage"] != null)
+{
+  <div class="alert alert-info alert-dismissible fade show mt-5 w-50 mx-auto" role="alert">
+  <strong>@TempData["InfoMessage"]</strong>
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 }

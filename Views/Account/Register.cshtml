@@ -58,7 +58,9 @@
                     <a asp-action="Login" asp-controller="Account" style="color: #6e78e0;">Sign in here</a>
                   </p>
 
-                  <div asp-validation-summary="ModelOnly" class="alert alert-danger mt-3">
+                  <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show mt-3"
+                    role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                   </div>
 
                 </form>

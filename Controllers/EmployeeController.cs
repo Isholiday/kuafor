@@ -25,20 +25,14 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
 
     [HttpPost]
     public async Task<IActionResult> Create([Bind("Name,Specialization,Skills,Availabilities")] Employee employee) {
-        if (employee.Skills == null || (employee.Skills.Count == 1 && string.IsNullOrWhiteSpace(employee.Skills[0]))) {
-            employee.Skills = [];
-            ModelState.ClearValidationState("Skills");
-            ModelState.MarkFieldValid("Skills");
-        }
-
         if (employee.Availabilities != null && employee.Availabilities.Count > 0) {
             var duplicateDays = employee.Availabilities
-                .GroupBy(a => a.Day)
+                .GroupBy(a => new { a.Day, a.StartTime, a.EndTime })
                 .Where(g => g.Count() > 1)
-                .Select(g => g.Key);
+                .Select(g => g.Key.Day);
 
             if (duplicateDays.Any()) {
-                ModelState.AddModelError(string.Empty, "Duplicate availability days are not allowed.");
+                ModelState.AddModelError(string.Empty, "Duplicate availability entries are not allowed.");
                 return View(employee);
             }
         }
@@ -51,25 +45,103 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
                 _context.Employees.Add(employee);
                 await _context.SaveChangesAsync();
 
-                if (employee.Availabilities != null && employee.Availabilities.Count != 0) {
-                    foreach (var availability in employee.Availabilities) {
-                        availability.Id = 0;
-                        availability.EmployeeId = employee.Id;
-                    }
-
-                    _context.Availabilities.AddRange(employee.Availabilities);
-                    await _context.SaveChangesAsync();
-                }
-
                 TempData["SuccessMessage"] = "Employee created successfully!";
                 return RedirectToAction("Index");
             } catch (Exception) {
                 ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
-                return View();
             }
 
         }
         return View(employee);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id) {
+        try {
+            var employee = await _context.Employees
+                .Include(e => e.Availabilities)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (employee == null) return NotFound();
+
+            return View(employee);
+        } catch (Exception) {
+            ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+            return View();
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Edit(Employee employee) {
+        if (!ModelState.IsValid) return View(employee);
+
+        try {
+            var existingEmployee = await _context.Employees
+                .Include(e => e.Availabilities)
+                .FirstOrDefaultAsync(e => e.Id == employee.Id);
+
+            if (existingEmployee == null) return NotFound();
+
+            bool hasChanges = false;
+
+            if (existingEmployee.Name != employee.Name ||
+                existingEmployee.Specialization != employee.Specialization) {
+                hasChanges = true;
+            }
+
+            var newSkills = employee.Skills != null && employee.Skills.Count > 0
+                ? employee.Skills[0].Split(',').Select(s => s.Trim()).ToList()
+                : [];
+
+            if (!Enumerable.SequenceEqual(
+                existingEmployee.Skills ?? new List<string>(),
+                newSkills)) {
+                hasChanges = true;
+            }
+
+            var existingAvailabilities = existingEmployee.Availabilities ?? new List<Availability>();
+            var newAvailabilities = employee.Availabilities ?? new List<Availability>();
+
+            if (existingAvailabilities.Count != newAvailabilities.Count ||
+                !existingAvailabilities.All(ea =>
+                    newAvailabilities.Any(na =>
+                        na.Day == ea.Day &&
+                        na.StartTime == ea.StartTime &&
+                        na.EndTime == ea.EndTime))) {
+                hasChanges = true;
+            }
+
+            if (!hasChanges) {
+                TempData["InfoMessage"] = "No changes were made to the employee.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            existingEmployee.Name = employee.Name;
+            existingEmployee.Specialization = employee.Specialization;
+            existingEmployee.Skills = newSkills;
+
+            if (existingEmployee.Availabilities != null)
+                _context.Availabilities.RemoveRange(existingEmployee.Availabilities);
+
+            if (newAvailabilities.Count > 0) {
+                var availabilitiesToAdd = newAvailabilities.Select(a => new Availability {
+                    EmployeeId = existingEmployee.Id,
+                    Day = a.Day,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime
+                }).ToList();
+
+                _context.Availabilities.AddRange(availabilitiesToAdd);
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Employee updated successfully!";
+            return RedirectToAction(nameof(Index));
+        } catch (Exception) {
+            ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+            return View(employee);
+        }
     }
 
     [HttpGet]
