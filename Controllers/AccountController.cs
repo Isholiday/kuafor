@@ -1,6 +1,5 @@
 using backend.Data;
 using backend.Services;
-using backend.Models;
 using backend.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +25,7 @@ public class AccountController(ApplicationDbContext context) : Controller {
                 return View(model);
             }
 
+            TempData["UserId"] = user.Id;
             return user.IsAdmin
                 ? RedirectToAction("AdminDashboard", "Dashboard")
                 : RedirectToAction("UserDashboard", "Dashboard");

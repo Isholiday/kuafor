@@ -1,3 +1,27 @@
+@model backend.Models.User
+
 @{
   ViewData["Title"] = "Dashboard";
 }
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card" style="border-radius: 1rem; background-color: #424242;">
+          <div class="card-body p-4 text-light">
+            <h2 class="text-center text-light mt-3" style="color: #EB975E;">Dashboard</h2>
+            @if (Model.EmployeeId.HasValue)
+            {
+              <p class="text-center text-light">Welcome @Model.Employee?.Name</p>
+            }
+            else
+            {
+              <p class="text-center text-light">Welcome @Model.Username</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

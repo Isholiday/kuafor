@@ -1,6 +1,7 @@
 using backend.Data;
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
@@ -10,7 +11,10 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
 
     public async Task<IActionResult> Index() {
         try {
-            var employees = await _context.Employees.Include(e => e.Availabilities).ToListAsync();
+            var employees = await _context.Employees
+            .Include(e => e.Availabilities)
+            .Include(e => e.Salon)
+            .ToListAsync();
             return View(employees);
         } catch (Exception) {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
@@ -20,11 +24,12 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
 
     [HttpGet]
     public IActionResult Create() {
+        ViewData["Salons"] = new SelectList(_context.Salons, "Id", "Name");
         return View(new Employee { Availabilities = [], Skills = [] });
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([Bind("Name,Specialization,Skills,Availabilities")] Employee employee) {
+    public async Task<IActionResult> Create([Bind("Name,Specialization,Skills,Availabilities,SalonId")] Employee employee) {
         if (employee.Availabilities != null && employee.Availabilities.Count > 0) {
             var duplicateDays = employee.Availabilities
                 .GroupBy(a => new { a.Day, a.StartTime, a.EndTime })
@@ -33,6 +38,7 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
 
             if (duplicateDays.Any()) {
                 ModelState.AddModelError(string.Empty, "Duplicate availability entries are not allowed.");
+                ViewData["Salons"] = new SelectList(_context.Salons, "Id", "Name", employee.SalonId);
                 return View(employee);
             }
         }
@@ -41,17 +47,20 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
             if (employee.Skills != null && employee.Skills.Count > 0) {
                 employee.Skills = employee.Skills[0].Split(',').Select(s => s.Trim()).ToList();
             }
+
             try {
                 _context.Employees.Add(employee);
                 await _context.SaveChangesAsync();
-
                 TempData["SuccessMessage"] = "Employee created successfully!";
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             } catch (Exception) {
-                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+                ModelState.AddModelError(string.Empty, "An error occurred while saving the employee.");
+                ViewData["Salons"] = new SelectList(_context.Salons, "Id", "Name", employee.SalonId);
+                return View(employee);
             }
-
         }
+
+        ViewData["Salons"] = new SelectList(_context.Salons, "Id", "Name", employee.SalonId);
         return View(employee);
     }
 
@@ -60,9 +69,17 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
         try {
             var employee = await _context.Employees
                 .Include(e => e.Availabilities)
+                .Include(e => e.Salon)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (employee == null) return NotFound();
+
+            ViewData["Salons"] = new SelectList(
+                await _context.Salons.ToListAsync(),
+                "Id",
+                "Name",
+                employee.SalonId
+            );
 
             return View(employee);
         } catch (Exception) {
@@ -94,7 +111,7 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
                 : [];
 
             if (!Enumerable.SequenceEqual(
-                existingEmployee.Skills ?? new List<string>(),
+                existingEmployee.Skills ?? [],
                 newSkills)) {
                 hasChanges = true;
             }
@@ -182,4 +199,3 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
         }
     }
 }
-

@@ -1,4 +1,80 @@
+@model IEnumerable<backend.Models.User>
+
 @{
   ViewData["Title"] = "Manage Users";
   Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
+
+<h1 class="text-center mt-3" style="color: #EB975E;">Users</h1>
+
+<div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+  <table class="table table-bordered text-center text-light mt-5 fs-5 w-75" style="margin: 0 auto;">
+    <thead style="background-color: #424242;">
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Operations</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (Model.Any())
+      {
+        @foreach (var item in Model)
+        {
+          <tr>
+            <td>@item.Username</td>
+            <td>@item.Email</td>
+            <td>
+              @if (item.IsAdmin)
+              {
+                <span class="badge bg-danger">Admin</span>
+              }
+              @if (item.EmployeeId.HasValue)
+              {
+                <span class="badge bg-info ms-1">Employee</span>
+              }
+              @if (!item.IsAdmin && !item.EmployeeId.HasValue)
+              {
+                <span class="badge bg-secondary">User</span>
+              }
+            </td>
+            <td>
+              <div class="d-flex flex-column flex-md-row justify-content-center gap-2">
+                @if (item.IsAdmin)
+                {
+                  <form asp-action="RevokeAdmin" asp-route-id="@item.Id" method="post">
+                    <button type="submit" class="btn btn-warning">Revoke Admin</button>
+                  </form>
+                }
+                else
+                {
+                  <form asp-action="MakeAdmin" asp-route-id="@item.Id" method="post">
+                    <button type="submit" class="btn btn-danger">Make Admin</button>
+                  </form>
+                }
+
+                @if (item.EmployeeId.HasValue)
+                {
+                  <form asp-action="RevokeEmployee" asp-route-id="@item.Id" method="post">
+                    <button type="submit" class="btn btn-warning">Revoke Employee</button>
+                  </form>
+                }
+                else
+                {
+                  <a asp-action="SelectEmployee" asp-route-id="@item.Id" class="btn btn-info">Make Employee</a>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      }
+      else
+      {
+        <tr>
+          <td colspan="4" class="text-center">No users found.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

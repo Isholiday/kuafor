@@ -1,8 +1,8 @@
-@using backend.Helpers
-@model backend.Models.Employee
+@using System.Globalization
+@model backend.Models.Service
 
 @{
-  ViewData["Title"] = "Delete Employee";
+  ViewData["Title"] = "Delete Service";
 }
 
 <section class="vh-100">
@@ -11,22 +11,22 @@
       <div class="col col-xl-8">
         <div class="card" style="border-radius: 1rem; background-color: #424242;">
           <div class="card-body p-4 text-light">
-            <h4 class="mb-4 text-center" style="letter-spacing: 1px; color: #EB975E;">Are you sure you want to delete
-              this employee?</h4>
+            <h4 class="mb-4 text-center" style="letter-spacing: 1px; color: #EB975E;">
+              Are you sure you want to delete this service?
+            </h4>
             <div class="mb-4">
               <strong>Name:</strong> @Model.Name <br />
-              <strong>Salon:</strong> @Model.Salon?.Name <br />
-              <strong>Specialization:</strong> @Model.Specialization <br />
-              <strong>Skills:</strong> @Model.Skills.ToCommaString()
+              <strong>Price:</strong> @Model.Price.ToString("C", new CultureInfo("tr-TR")) <br />
+              <strong>Duration:</strong> @Model.Duration.ToString(@"hh\:mm") <br />
+              <strong>Salon:</strong> @Model.Salon?.Name
             </div>
 
             <div class="text-center">
               <form asp-action="Delete" method="post">
                 <input type="hidden" asp-for="Id" />
-                <button type="submit" class="btn btn-success btn-lg w-100 mt-1">Yes,
-                  Delete</button>
+                <button type="submit" class="btn btn-danger btn-lg w-100">Delete</button>
               </form>
-              <a asp-action="Index" class="btn btn-danger btn-lg w-100 mt-2">Cancel</a>
+              <a asp-action="Index" class="btn btn-primary btn-lg w-100 mt-2">Cancel</a>
             </div>
           </div>
         </div>

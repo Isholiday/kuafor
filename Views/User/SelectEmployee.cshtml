@@ -1,0 +1,40 @@
+@model int
+@{
+  ViewData["Title"] = "Select Employee";
+}
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-8">
+        <div class="card" style="border-radius: 1rem; background-color: #424242;">
+          <div class="card-body p-4 text-light">
+            <h4 class="mb-4 text-center" style="color: #EB975E;">Select Employee</h4>
+
+            <form asp-action="ConfirmEmployee" method="post">
+              <input type="hidden" name="userId" value="@Model" />
+
+              <div class="form-group mb-4">
+                <label class="form-label">Select Employee</label>
+                <select name="employeeId" class="form-control form-control-lg" required>
+                  <option value="">Select an employee</option>
+                  @foreach (var employee in ViewBag.AvailableEmployees)
+                  {
+                    <option value="@employee.Id">@employee.Name</option>
+                  }
+                </select>
+              </div>
+
+              <div class="text-center pt-1">
+                <button class="btn btn-lg w-100" style="background-color: #EB975E;" type="submit">
+                  Confirm
+                </button>
+                <a asp-action="Index" class="btn btn-danger btn-lg w-100 mt-2">Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

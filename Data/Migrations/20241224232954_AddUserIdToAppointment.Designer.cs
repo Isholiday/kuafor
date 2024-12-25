@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Data;
 
@@ -11,9 +12,11 @@ using backend.Data;
 namespace backend.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241224232954_AddUserIdToAppointment")]
+    partial class AddUserIdToAppointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,9 +42,6 @@ namespace backend.Data.Migrations
                     b.Property<bool>("IsConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SalonId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ServiceId")
                         .HasColumnType("int");
 
@@ -51,8 +51,6 @@ namespace backend.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
-
-                    b.HasIndex("SalonId");
 
                     b.HasIndex("ServiceId");
 
@@ -228,12 +226,6 @@ namespace backend.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.Salon", "Salon")
-                        .WithMany()
-                        .HasForeignKey("SalonId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("backend.Models.Service", "Service")
                         .WithMany()
                         .HasForeignKey("ServiceId")
@@ -247,8 +239,6 @@ namespace backend.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Employee");
-
-                    b.Navigation("Salon");
 
                     b.Navigation("Service");
 

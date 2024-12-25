@@ -18,6 +18,13 @@ public class Employee {
     public List<string> Skills { get; set; } = [];
 
     [Required]
+    [Display(Name = "Salon")]
+    public int SalonId { get; set; }
+
+    [JsonIgnore]
+    public Salon? Salon { get; set; }
+
+    [Required]
     [JsonIgnore]
     public List<Availability> Availabilities { get; set; } = [];
 }

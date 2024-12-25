@@ -1,21 +1,21 @@
-@model IEnumerable<backend.Models.Salon>
+@using System.Globalization
+@model IEnumerable<backend.Models.Service>
 
 @{
-  ViewData["Title"] = "Manage Salons";
+  ViewData["Title"] = "Manage Salon Services";
   Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<h1 class="text-center mt-3" style="color: #EB975E;">Salons</h1>
+<h1 class="text-center mt-3" style="color: #EB975E;">Services</h1>
 
 <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
   <table class="table table-bordered text-center text-light mt-5 fs-5" style="width: 80%; margin: 0 auto;">
     <thead style="background-color: #424242;">
       <tr>
         <th>Name</th>
-        <th>Address</th>
-        <th>Phone</th>
-        <th>Email</th>
-        <th>Operating Hours</th>
+        <th>Price</th>
+        <th>Duration</th>
+        <th>Salon</th>
         <th>Operations</th>
       </tr>
     </thead>
@@ -26,10 +26,24 @@
         {
           <tr>
             <td>@item.Name</td>
-            <td>@item.Address</td>
-            <td>@item.PhoneNumber</td>
-            <td>@item.Email</td>
-            <td>@item.OpeningTime.ToString("hh\\:mm") - @item.ClosingTime.ToString("hh\\:mm")</td>
+            <td>@item.Price.ToString("C", new CultureInfo("tr-TR"))</td>
+            <td>
+              @{
+                var hours = item.Duration.Hours;
+                var minutes = item.Duration.Minutes;
+                var durationText = "";
+
+                if (hours > 0) durationText += $"{hours} hour{(hours == 1 ? "" : "s")}";
+
+                if (minutes > 0)
+                {
+                  if (hours > 0) durationText += " ";
+                  durationText += $"{minutes} minute{(minutes == 1 ? "" : "s")}";
+                }
+                @durationText
+              }
+            </td>
+            <td>@item.Salon?.Name</td>
             <td>
               <a class="btn btn-primary mt-1" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
               <a class="btn btn-danger mt-1" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
@@ -40,7 +54,7 @@
       else
       {
         <tr>
-          <td colspan="6" class="text-center">No salons found.</td>
+          <td colspan="5" class="text-center">No services found.</td>
         </tr>
       }
     </tbody>

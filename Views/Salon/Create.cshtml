@@ -1,3 +1,64 @@
+@model backend.Models.Salon
+
 @{
   ViewData["Title"] = "Create Salon";
 }
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-8">
+        <div class="card" style="border-radius: 1rem; background-color: #424242;">
+          <div class="card-body p-4 text-light">
+            <h4 class="mb-4 text-center" style="letter-spacing: 1px; color: #EB975E;">Create New Salon</h4>
+            <form asp-action="Create" method="post">
+              <div class="form-outline mb-4">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control form-control-lg" />
+                <span asp-validation-for="Name" class="text-danger mt-2"></span>
+              </div>
+
+              <div class="form-outline mb-4">
+                <label asp-for="Address" class="form-label"></label>
+                <input asp-for="Address" class="form-control form-control-lg" />
+                <span asp-validation-for="Address" class="text-danger mt-2"></span>
+              </div>
+
+              <div class="form-outline mb-4">
+                <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                <input asp-for="PhoneNumber" class="form-control form-control-lg" />
+                <span asp-validation-for="PhoneNumber" class="text-danger mt-2"></span>
+              </div>
+
+              <div class="form-outline mb-4">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" type="email" class="form-control form-control-lg" />
+                <span asp-validation-for="Email" class="text-danger mt-2"></span>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label asp-for="OpeningTime" class="form-label">Opening Time</label>
+                  <input asp-for="OpeningTime" type="time" class="form-control form-control-lg" />
+                  <span asp-validation-for="OpeningTime" class="text-danger mt-2"></span>
+                </div>
+                <div class="col-md-6">
+                  <label asp-for="ClosingTime" class="form-label">Closing Time</label>
+                  <input asp-for="ClosingTime" type="time" class="form-control form-control-lg" />
+                  <span asp-validation-for="ClosingTime" class="text-danger mt-2"></span>
+                </div>
+              </div>
+
+              <div class="text-center pt-1">
+                <button class="btn btn-lg w-100" style="background-color: #EB975E;" type="submit">
+                  Create
+                </button>
+                <a asp-action="Index" class="btn btn-danger btn-lg w-100 mt-2">Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

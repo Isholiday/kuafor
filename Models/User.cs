@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace backend.Models;
 
@@ -16,6 +17,12 @@ public class User {
     [Required]
     [EmailAddress]
     public string? Email { get; set; }
+
     public bool IsAdmin { get; set; }
+
+    public int? EmployeeId { get; set; }
+
+    [JsonIgnore]
+    public Employee? Employee { get; set; }
 }
 

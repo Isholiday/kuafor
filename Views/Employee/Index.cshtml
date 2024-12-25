@@ -12,6 +12,7 @@
     <thead style="background-color: #424242;">
       <tr>
         <th>Name</th>
+        <th>Salon</th>
         <th>Specialization</th>
         <th>Skills</th>
         <th>Availabilities</th>
@@ -25,6 +26,7 @@
         {
           <tr>
             <td>@item.Name</td>
+            <td>@item.Salon?.Name</td>
             <td>@item.Specialization</td>
             <td>@string.Join(", ", item.Skills ?? new List<string>())</td>
             <td>
@@ -52,7 +54,7 @@
       else
       {
         <tr>
-          <td colspan="5" class="text-center">No employees found.</td>
+          <td colspan="6" class="text-center">No employees found.</td>
         </tr>
       }
     </tbody>
@@ -62,19 +64,3 @@
 <p class="text-center mt-5">
   <a asp-action="Create" class="btn btn-lg" style="background-color: #EB975E;">Create New</a>
 </p>
-
-@if (TempData["SuccessMessage"] != null)
-{
-  <div class="alert alert-success alert-dismissible fade show mt-5 w-50 mx-auto" role="alert">
-  <strong>@TempData["SuccessMessage"]</strong>
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-}
-
-@if (TempData["InfoMessage"] != null)
-{
-  <div class="alert alert-info alert-dismissible fade show mt-5 w-50 mx-auto" role="alert">
-  <strong>@TempData["InfoMessage"]</strong>
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-}
