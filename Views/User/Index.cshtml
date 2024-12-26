@@ -40,32 +40,30 @@
               }
             </td>
             <td>
-              <div class="d-flex flex-column flex-md-row justify-content-center gap-2">
-                @if (item.IsAdmin)
-                {
-                  <form asp-action="RevokeAdmin" asp-route-id="@item.Id" method="post">
-                    <button type="submit" class="btn btn-warning">Revoke Admin</button>
-                  </form>
-                }
-                else
-                {
-                  <form asp-action="MakeAdmin" asp-route-id="@item.Id" method="post">
-                    <button type="submit" class="btn btn-danger">Make Admin</button>
-                  </form>
-                }
+              @if (item.IsAdmin)
+              {
+                <form asp-action="RevokeAdmin" asp-route-id="@item.Id" method="post">
+                  <button type="submit" class="btn btn-warning mt-1 w-75">Revoke Admin</button>
+                </form>
+              }
+              else
+              {
+                <form asp-action="MakeAdmin" asp-route-id="@item.Id" method="post">
+                  <button type="submit" class="btn btn-danger mt-1 w-75">Make Admin</button>
+                </form>
+              }
 
-                @if (item.EmployeeId.HasValue)
-                {
-                  <form asp-action="RevokeEmployee" asp-route-id="@item.Id" method="post">
-                    <button type="submit" class="btn btn-warning">Revoke Employee</button>
-                  </form>
-                }
-                else
-                {
-                  <a asp-action="SelectEmployee" asp-route-id="@item.Id" class="btn btn-info">
-                    Make Employee</a>
-                }
-              </div>
+              @if (item.EmployeeId.HasValue)
+              {
+                <form asp-action="RevokeEmployee" asp-route-id="@item.Id" method="post">
+                  <button type="submit" class="btn btn-warning mt-1 w-75">Revoke Employee</button>
+                </form>
+              }
+              else
+              {
+                <a asp-action="SelectEmployee" asp-route-id="@item.Id" class="btn btn-info mt-1 w-75">
+                  Make Employee</a>
+              }
             </td>
           </tr>
         }
