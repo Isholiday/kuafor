@@ -15,6 +15,7 @@ public class DashboardController(ApplicationDbContext context) : Controller {
             if (TempData["UserId"] == null) return RedirectToAction("Login", "Account");
 
             var userId = (int)TempData["UserId"]!;
+            TempData.Keep("UserId");
             var user = await _context.Users
                 .Include(u => u.Employee)
                 .FirstOrDefaultAsync(u => u.Id == userId);

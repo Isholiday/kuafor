@@ -1,0 +1,65 @@
+@model backend.ViewModels.HairAdvisorViewModel
+
+@{
+  ViewData["Title"] = "Hair Style Advisor";
+}
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card" style="border-radius: 1rem; background-color: #424242;">
+          <div class="card-body p-4 text-light">
+            <h2 class="text-center" style="color: #EB975E;">Hair Style Advisor</h2>
+
+            <form asp-action="Analyze" method="post" enctype="multipart/form-data">
+              <div class="row justify-content-center">
+                <div class="col-6">
+                  <div class="my-4">
+                    <div class="row align-items-center justify-content-center">
+                      <div class="col-auto">
+                        <label asp-for="Photo" class="form-label mb-0"></label>
+                      </div>
+                      <div class="col-auto">
+                        <input asp-for="Photo" class="form-control" type="file" accept="image/*" />
+                      </div>
+                    </div>
+                    <div class="text-center">
+                      <span asp-validation-for="Photo" class="text-danger"></span>
+                    </div>
+                  </div>
+
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-lg w-100" style="background-color: #EB975E;">
+                      Get Recommendations
+                      <img src="../photos/ai-icon.png" alt="AI" class="ms-2" style="width: 20px; height: 20px;">
+                    </button>
+                    <a asp-controller="Dashboard" asp-action="UserDashboard"
+                      class="btn btn-danger btn-lg w-100 mt-2">Cancel</a>
+                  </div>
+
+                  <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show mt-3"
+                    role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            @if (Model.HasResult)
+            {
+              <div class="mt-5">
+                <h4 class="mb-3" style="color: #EB975E;">Your Recommendations</h4>
+                <div class="card" style="background-color: #525252;">
+                  <div class="card-body">
+                    <p class="text-light fs-5">@Model.RecommendationResult</p>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
