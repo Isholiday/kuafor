@@ -17,6 +17,29 @@ html {
   overflow: hidden;
 }
 
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn:focus,
+.btn:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.form-control:focus,
+.form-control:active,
+input:focus,
+input:active {
+  border-color: #eb975e !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+.form-control:hover {
+  border-color: #eb975e;
+}
+
 @media (max-width: 768px) {
   html {
     overflow: visible;
