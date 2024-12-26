@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Route("/panel/[controller]")]
 public class SalonController(ApplicationDbContext context) : Controller {
     private readonly ApplicationDbContext _context = context;
 
@@ -18,11 +19,13 @@ public class SalonController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("Create")]
     [HttpGet]
     public IActionResult Create() {
         return View(new Salon());
     }
 
+    [Route("Create")]
     [HttpPost]
     public async Task<IActionResult> Create(Salon salon) {
         if (ModelState.IsValid) {
@@ -38,6 +41,7 @@ public class SalonController(ApplicationDbContext context) : Controller {
         return View(salon);
     }
 
+    [Route("Edit")]
     [HttpGet]
     public async Task<IActionResult> Edit(int id) {
         try {
@@ -50,6 +54,7 @@ public class SalonController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("Edit")]
     [HttpPost]
     public async Task<IActionResult> Edit(Salon salon) {
         if (!ModelState.IsValid) return View(salon);
@@ -81,6 +86,7 @@ public class SalonController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("Delete")]
     [HttpGet]
     public async Task<IActionResult> Delete(int id) {
         try {
@@ -93,6 +99,7 @@ public class SalonController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("Delete")]
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id) {
         try {

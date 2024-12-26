@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Route("/panel/[controller]")]
 public class EmployeeController(ApplicationDbContext context) : Controller {
     private readonly ApplicationDbContext _context = context;
 
@@ -22,12 +23,14 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("Create")]
     [HttpGet]
     public IActionResult Create() {
         ViewData["Salons"] = new SelectList(_context.Salons, "Id", "Name");
         return View(new Employee { Availabilities = [], Skills = [] });
     }
 
+    [Route("Create")]
     [HttpPost]
     public async Task<IActionResult> Create([Bind("Name,Specialization,Skills,Availabilities,SalonId")] Employee employee) {
         if (employee.Availabilities != null && employee.Availabilities.Count > 0) {
@@ -64,6 +67,7 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
         return View(employee);
     }
 
+    [Route("Edit")]
     [HttpGet]
     public async Task<IActionResult> Edit(int id) {
         try {
@@ -88,6 +92,7 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("Edit")]
     [HttpPost]
     public async Task<IActionResult> Edit(Employee employee) {
         if (!ModelState.IsValid) return View(employee);
@@ -161,11 +166,13 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("Delete")]
     [HttpGet]
     public async Task<IActionResult> Delete(int id) {
         try {
             var employee = await _context.Employees
                 .Include(e => e.Availabilities)
+                .Include(e => e.Salon)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (employee == null) return NotFound();
@@ -177,7 +184,7 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
         }
     }
 
-
+    [Route("Delete")]
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id) {
         try {

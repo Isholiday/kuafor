@@ -22,8 +22,8 @@
               <div class="form-outline mb-4">
                 <label asp-for="SalonId" class="form-label">Salon</label>
                 <select asp-for="SalonId" class="form-select form-select-lg"
-                  asp-items="@(ViewData["Salons"] as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>()))"></select>
-                <option value="">Select a Salon</option>
+                  asp-items="@(ViewData["Salons"] as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>()))">
+                  <option value="">Select a Salon</option>
                 </select>
                 <span asp-validation-for="SalonId" class="text-danger mt-2"></span>
               </div>

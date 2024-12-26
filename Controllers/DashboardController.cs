@@ -38,6 +38,7 @@ public class DashboardController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("/Panel")]
     public IActionResult AdminDashboard() {
         try {
             if (TempData["UserId"] == null) return RedirectToAction("Login", "Account");

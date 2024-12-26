@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Route("/panel/[controller]")]
 public class UserController(ApplicationDbContext context) : Controller {
     private readonly ApplicationDbContext _context = context;
 
@@ -16,10 +17,11 @@ public class UserController(ApplicationDbContext context) : Controller {
             return View(users);
         } catch (Exception) {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
-            return View(Array.Empty<User>());
+            return View();
         }
     }
 
+    [Route("make-admin/{id}")]
     [HttpPost]
     public async Task<IActionResult> MakeAdmin(int id) {
         try {
@@ -35,6 +37,7 @@ public class UserController(ApplicationDbContext context) : Controller {
         return RedirectToAction(nameof(Index));
     }
 
+    [Route("revoke-admin/{id}")]
     [HttpPost]
     public async Task<IActionResult> RevokeAdmin(int id) {
         try {
@@ -50,6 +53,7 @@ public class UserController(ApplicationDbContext context) : Controller {
         return RedirectToAction(nameof(Index));
     }
 
+    [Route("select-employee/{id}")]
     [HttpGet]
     public async Task<IActionResult> SelectEmployee(int id) {
         var availableEmployees = await _context.Employees
@@ -76,6 +80,7 @@ public class UserController(ApplicationDbContext context) : Controller {
         return RedirectToAction(nameof(Index));
     }
 
+    [Route("revoke-employee/{id}")]
     [HttpPost]
     public async Task<IActionResult> RevokeEmployee(int id) {
         try {

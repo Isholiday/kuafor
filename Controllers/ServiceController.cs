@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Route("/panel/[controller]")]
 public class ServiceController(ApplicationDbContext context) : Controller {
     private readonly ApplicationDbContext _context = context;
 
@@ -21,12 +22,14 @@ public class ServiceController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("Create")]
     [HttpGet]
     public IActionResult Create() {
         ViewBag.Salons = new SelectList(_context.Salons, "Id", "Name");
         return View(new Service());
     }
 
+    [Route("Create")]
     [HttpPost]
     public async Task<IActionResult> Create([Bind("Name,Price,Duration,SalonId")] Service service) {
         if (ModelState.IsValid) {
@@ -43,6 +46,7 @@ public class ServiceController(ApplicationDbContext context) : Controller {
         return View(service);
     }
 
+    [Route("Edit")]
     [HttpGet]
     public async Task<IActionResult> Edit(int id) {
         try {
@@ -60,6 +64,7 @@ public class ServiceController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("Edit")]
     [HttpPost]
     public async Task<IActionResult> Edit(Service service) {
         if (!ModelState.IsValid) {
@@ -91,6 +96,7 @@ public class ServiceController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("Delete")]
     [HttpGet]
     public async Task<IActionResult> Delete(int id) {
         try {
@@ -107,6 +113,7 @@ public class ServiceController(ApplicationDbContext context) : Controller {
         }
     }
 
+    [Route("Delete")]
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id) {
         try {
