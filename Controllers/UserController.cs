@@ -1,10 +1,11 @@
 using backend.Data;
-using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Authorize(Roles = "Admin")]
 [Route("/panel/[controller]")]
 public class UserController(ApplicationDbContext context) : Controller {
     private readonly ApplicationDbContext _context = context;

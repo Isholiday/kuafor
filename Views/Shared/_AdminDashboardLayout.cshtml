@@ -36,7 +36,9 @@
           </li>
         </ul>
         <div class="mt-auto text-center">
-          <button class="btn btn-lg w-100 fs-6 fs-md-5 fs-lg-4" style="background-color: #EB975E;">Logout</button>
+          <form asp-controller="Account" asp-action="Logout" method="post">
+            <button class="btn btn-lg w-100 fs-6 fs-md-5 fs-lg-4" style="background-color: #EB975E;">Logout</button>
+          </form>
         </div>
       </nav>
 
@@ -63,7 +65,9 @@
                 <a class="nav-link text-light" asp-controller="User" asp-action="Index">Manage Users</a>
               </li>
               <li class="nav-item mt-3">
-                <button class="btn btn-lg w-100" style="background-color: #EB975E;">Logout</button>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                  <button type="submit" class="btn btn-lg w-100" style="background-color: #EB975E;">Logout</button>
+                </form>
               </li>
             </ul>
           </div>

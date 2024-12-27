@@ -1,9 +1,11 @@
 using backend.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenAI.Chat;
 
 namespace backend.Controllers;
 
+[Authorize(Roles = "User")]
 [Route("/Dashboard/[controller]")]
 public class HairAdvisorController(IConfiguration configuration) : Controller {
 
