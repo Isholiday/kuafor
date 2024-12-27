@@ -47,7 +47,7 @@ if (app.Environment.IsDevelopment()) {
     app.UseHsts();
 }
 
-app.UseStatusCodePagesWithReExecute("/Error/NotFound", "?statusCode={0}");
+app.UseStatusCodePagesWithReExecute("/Error/HandleError", "?statusCode={0}");
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();

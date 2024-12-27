@@ -11,8 +11,11 @@ public class ErrorController : Controller {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
-    public IActionResult NotFound(int statusCode) {
-        if (statusCode == 404) return View("NotFound");
-        return View();
+    public IActionResult HandleError(int statusCode) {
+        return statusCode switch {
+            401 => View("Unauthorized"),
+            404 => View("NotFound"),
+            _ => View(),
+        };
     }
 }
