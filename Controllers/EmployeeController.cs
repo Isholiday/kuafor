@@ -179,6 +179,12 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
 
             if (employee == null) return NotFound();
 
+            var hasUser = await _context.Users.AnyAsync(u => u.EmployeeId == id);
+            if (hasUser) {
+                TempData["InfoMessage"] = "Cannot delete employee because this employee is assigned to a user.";
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(employee);
         } catch (Exception) {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
@@ -190,12 +196,14 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id) {
         try {
-            var employee = await _context.Employees
-                .Include(e => e.Availabilities)
-                .FirstOrDefaultAsync(e => e.Id == id);
-
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Id == id);
             if (employee == null) return NotFound();
-            if (employee.Availabilities != null) _context.Availabilities.RemoveRange(employee.Availabilities);
+
+            var hasUser = await _context.Users.AnyAsync(u => u.EmployeeId == id);
+            if (hasUser) {
+                TempData["InfoMessage"] = "Cannot delete employee because this employee is assigned to a user.";
+                return RedirectToAction(nameof(Index));
+            }
 
             _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();

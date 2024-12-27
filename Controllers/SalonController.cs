@@ -105,8 +105,23 @@ public class SalonController(ApplicationDbContext context) : Controller {
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id) {
         try {
-            var salon = await _context.Salons.FindAsync(id);
+            var salon = await _context.Salons
+                .Include(s => s.Services)
+                .Include(s => s.Employees)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
             if (salon == null) return NotFound();
+
+            if (salon.Services.Count > 0 && salon.Employees.Count > 0) {
+                TempData["InfoMessage"] = "Cannot delete salon because it has associated services and employees.";
+                return RedirectToAction(nameof(Index));
+            } else if (salon.Services.Count > 0) {
+                TempData["InfoMessage"] = "Cannot delete salon because it has associated services.";
+                return RedirectToAction(nameof(Index));
+            } else if (salon.Employees.Count > 0) {
+                TempData["InfoMessage"] = "Cannot delete salon because it has associated employees.";
+                return RedirectToAction(nameof(Index));
+            }
 
             _context.Salons.Remove(salon);
             await _context.SaveChangesAsync();

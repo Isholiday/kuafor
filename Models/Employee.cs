@@ -13,8 +13,7 @@ public class Employee {
     [Required]
     public string? Specialization { get; set; }
 
-    [RequiredList(ErrorMessage = "The Skills field is required.")]
-    [Display(Name = "Skills (comma separated)")]
+    [RequiredList]
     public List<string> Skills { get; set; } = [];
 
     [Required]

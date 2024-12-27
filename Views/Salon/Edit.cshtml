@@ -66,3 +66,20 @@
     </div>
   </div>
 </section>
+
+@section Scripts {
+  <script>
+    $(document).ready(function () {
+      $('form').on('submit', function (e) {
+        var openingTime = $('#OpeningTime').val();
+        var closingTime = $('#ClosingTime').val();
+
+        if (openingTime >= closingTime) {
+          e.preventDefault();
+          $('#timeError').remove();
+          $('#ClosingTime').after('<span id="timeError" class="text-danger mt-2">Closing time must be after opening time</span>');
+        }
+      });
+    });
+  </script>
+}
