@@ -10,7 +10,7 @@ namespace backend.Controllers;
 public class DashboardController(ApplicationDbContext context) : Controller {
     private readonly ApplicationDbContext _context = context;
 
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User,Admin")]
     [Route("/Dashboard")]
     public async Task<IActionResult> UserDashboard() {
         try {

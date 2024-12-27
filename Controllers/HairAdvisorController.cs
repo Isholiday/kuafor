@@ -5,7 +5,7 @@ using OpenAI.Chat;
 
 namespace backend.Controllers;
 
-[Authorize(Roles = "User")]
+[Authorize(Roles = "User,Admin")]
 [Route("/Dashboard/[controller]")]
 public class HairAdvisorController(IConfiguration configuration) : Controller {
 

@@ -14,8 +14,9 @@ public class ErrorController : Controller {
     public IActionResult HandleError(int statusCode) {
         return statusCode switch {
             401 => View("Unauthorized"),
+            403 => View("Forbidden"),
             404 => View("NotFound"),
-            _ => View(),
+            _ => View("HandleError"),
         };
     }
 }
