@@ -18,8 +18,7 @@ public class JwtService {
             ),
             ValidateIssuer = false,
             ValidateAudience = false,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
+            ValidateLifetime = true
         };
     }
 
