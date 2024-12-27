@@ -24,6 +24,12 @@ public class HairAdvisorController(IConfiguration configuration) : Controller {
                 return View(nameof(Index), model);
             }
 
+            string[] allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+            if (!allowedTypes.Contains(model.Photo.ContentType.ToLower())) {
+                ModelState.AddModelError(string.Empty, "Please upload a valid image file (jpg, jpeg, or png)");
+                return View(nameof(Index), model);
+            }
+
             using var ms = new MemoryStream();
             await model.Photo.CopyToAsync(ms);
             var imageData = Convert.ToBase64String(ms.ToArray());
@@ -43,8 +49,11 @@ public class HairAdvisorController(IConfiguration configuration) : Controller {
             );
             model.RecommendationResult = chatCompletion.Content[0].Text;
             return View(nameof(Index), model);
+        } catch (UriFormatException) {
+            ModelState.AddModelError(string.Empty, "The uploaded image is too large. Please upload a smaller image.");
+            return View(nameof(Index), model);
         } catch (Exception) {
-            ModelState.AddModelError(string.Empty, "An error occurred while processing your request.");
+            ModelState.AddModelError(string.Empty, "An error occurred while processing your request");
             return View(nameof(Index), model);
         }
     }

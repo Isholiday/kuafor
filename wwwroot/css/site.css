@@ -36,6 +36,11 @@ input:active {
   outline: 0 !important;
 }
 
+.btn-close {
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
 .form-control:hover {
   border-color: #eb975e;
 }
