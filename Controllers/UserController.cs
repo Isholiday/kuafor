@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using backend.Data;
+using backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,13 +47,23 @@ public class UserController(ApplicationDbContext context) : Controller {
             var user = await _context.Users.FindAsync(id);
             if (user == null) return NotFound();
 
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            var isCurrentUser = currentUserId == id;
+
             user.IsAdmin = false;
             await _context.SaveChangesAsync();
+
+            if (isCurrentUser) {
+                Response.Cookies.Delete("JWT");
+                return RedirectToAction("Login", "Account");
+            }
+
             TempData["SuccessMessage"] = "Admin status has been revoked successfully.";
+            return RedirectToAction(nameof(Index));
         } catch (Exception) {
             TempData["InfoMessage"] = "An error occurred while updating user status.";
+            return RedirectToAction(nameof(Index));
         }
-        return RedirectToAction(nameof(Index));
     }
 
     [Route("select-employee/{id}")]

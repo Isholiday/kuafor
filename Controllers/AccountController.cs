@@ -88,12 +88,7 @@ public class AccountController(ApplicationDbContext context, JwtService jwtServi
 
     [HttpPost]
     public IActionResult Logout() {
-        Response.Cookies.Delete("JWT", new CookieOptions {
-            HttpOnly = true,
-            Secure = HttpContext.Request.IsHttps,
-            SameSite = SameSiteMode.Strict
-        });
-
+        Response.Cookies.Delete("JWT");
         return RedirectToAction(nameof(Login));
     }
 }
