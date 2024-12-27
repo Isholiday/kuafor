@@ -31,15 +31,13 @@
 
                   <div class="text-center">
                     <button type="submit" class="btn btn-lg w-100" id="submitBtn" style="background-color: #EB975E;">
-                      <span class="d-flex align-items-center justify-content-center">
-                        <span class="normal-state">
-                          Get Recommendations
-                          <img src="../photos/ai-icon.png" alt="AI" class="ms-2" style="width: 20px; height: 20px;">
-                        </span>
-                        <span class="loading-state d-none">
-                          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                          Processing...
-                        </span>
+                      <span class="normal-state">
+                        Get Recommendations
+                        <img src="../photos/ai-icon.png" alt="AI" class="ms-2" style="width: 20px; height: 20px;">
+                      </span>
+                      <span class="loading-state d-none">
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Processing...
                       </span>
                     </button>
                     <a asp-controller="Dashboard" asp-action="UserDashboard"
@@ -56,8 +54,8 @@
 
             @if (Model.HasResult)
             {
-              <div class="mt-5">
-                <h4 class="mb-3" style="color: #EB975E;">Your Recommendations</h4>
+              <h4 class="my-4 text-center" style="color: #EB975E;">Your Recommendations</h4>
+              <div style="max-height: calc(100vh - 600px); overflow-y: auto;">
                 <div class="card" style="background-color: #525252;">
                   <div class="card-body">
                     <p class="text-light fs-5">@Model.RecommendationResult</p>
@@ -74,10 +72,13 @@
 
 @section Scripts {
   <script>
-    $('form').on('submit', function () {
+    $('form').on('submit', function (e) {
       const $btn = $('#submitBtn');
       const $normalState = $btn.find('.normal-state');
       const $loadingState = $btn.find('.loading-state');
+      const $fileInput = $('#Photo');
+
+      if (!$fileInput.val()) return;
 
       $btn.prop('disabled', true);
       $normalState.addClass('d-none');
