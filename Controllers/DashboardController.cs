@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using backend.Data;
+using backend.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -38,9 +39,40 @@ public class DashboardController(ApplicationDbContext context) : Controller {
     }
 
     [Authorize(Roles = "Admin")]
-    [Route("/Panel")]
-    public IActionResult AdminDashboard() {
-        return View();
+    [Route("Panel")]
+    public async Task<IActionResult> AdminDashboard() {
+        var today = DateTime.Today;
+        var nextMonday = today.AddDays(((int)DayOfWeek.Monday - (int)today.DayOfWeek + 7) % 7);
+        var nextSunday = nextMonday.AddDays(6);
+
+        var appointments = await _context.Appointments
+            .Include(a => a.Service)
+            .Include(a => a.Employee)
+            .Where(a => a.AppointmentDate.Date >= nextMonday &&
+                        a.AppointmentDate.Date <= nextSunday &&
+                        a.IsConfirmed)
+            .ToListAsync();
+
+        var employeeRevenues = await _context.Employees
+            .Select(e => e.Id)
+            .ToListAsync();
+
+        var viewModel = employeeRevenues
+            .Select(employeeId => {
+                var employeeAppointments = appointments
+                    .Where(a => a.EmployeeId == employeeId)
+                    .ToList();
+
+                return new EmployeeRevenueViewModel {
+                    EmployeeName = _context.Employees.First(e => e.Id == employeeId).Name!,
+                    AppointmentCount = employeeAppointments.Count,
+                    TotalHours = employeeAppointments.Sum(a => a.Service!.Duration.TotalHours),
+                    Revenue = employeeAppointments.Sum(a => a.Service!.Price)
+                };
+            })
+            .ToList();
+
+        return View(viewModel);
     }
 
 

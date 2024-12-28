@@ -1,4 +1,56 @@
+@model IEnumerable<backend.ViewModels.EmployeeRevenueViewModel>
 @{
   ViewData["Title"] = "Admin Panel";
   Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+
+  var today = DateTime.Today;
+  var nextMonday = today.AddDays(((int)DayOfWeek.Monday - (int)today.DayOfWeek + 7) % 7);
+  var nextSunday = nextMonday.AddDays(6);
 }
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card" style="border-radius: 1rem; background-color: #424242;">
+          <div class="card-body p-4 text-light">
+            <h4 class="text-center mb-4" style="letter-spacing: 1px; color: #EB975E;">Weekly Revenue Report</h4>
+            <h6 class="text-center mb-4">(@nextMonday.ToString("dd/MM/yyyy") - @nextSunday.ToString("dd/MM/yyyy"))</h6>
+
+            <div class="table-responsive">
+              <table class="table table-bordered text-center text-light">
+                <thead style="background-color: #525252;">
+                  <tr>
+                    <th>Employee</th>
+                    <th>Appointments</th>
+                    <th>Total Hours</th>
+                    <th>Expected Revenue</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (var employee in Model)
+                  {
+                    <tr>
+                      <td>@employee.EmployeeName</td>
+                      <td>@employee.AppointmentCount</td>
+                      <td>@employee.TotalHours.ToString("F1")</td>
+                      <td>₺@employee.Revenue.ToString("F2")</td>
+                    </tr>
+                  }
+                </tbody>
+                <tfoot style="background-color: #525252;">
+                  <tr>
+                    <td><strong>Total</strong></td>
+                    <td>@Model.Sum(e => e.AppointmentCount)</td>
+                    <td>@Model.Sum(e => e.TotalHours).ToString("F1")</td>
+                    <td>₺@Model.Sum(e => e.Revenue).ToString("F2")</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -20,6 +20,10 @@
         <ul class="nav flex-column d-flex justify-content-center" style="flex-grow: 1;">
           <li class="nav-item mb-3">
             <a class="nav-link text-light font-weight-bold fs-6 fs-md-5 fs-lg-4 px-3 py-2 rounded-3 border border-light d-flex justify-content-center align-items-center"
+              asp-controller="Dashboard" asp-action="AdminDashboard">Revenue Reports</a>
+          </li>
+          <li class="nav-item mb-3">
+            <a class="nav-link text-light font-weight-bold fs-6 fs-md-5 fs-lg-4 px-3 py-2 rounded-3 border border-light d-flex justify-content-center align-items-center"
               asp-controller="Salon" asp-action="Index">Manage Salons</a>
           </li>
           <li class="nav-item mb-3">
@@ -52,6 +56,10 @@
           <a class="navbar-brand" style="color: #EB975E;">Dashboard</a>
           <div class="collapse navbar-collapse" id="mobileMenu">
             <ul class="navbar-nav flex-column mt-3">
+              <li class="nav-item">
+                <a class="nav-link text-light" asp-controller="Dashboard" asp-action="AdminDashboard">Revenue
+                  Reports</a>
+              </li>
               <li class="nav-item">
                 <a class="nav-link text-light" asp-controller="Salon" asp-action="Index">Manage Salons</a>
               </li>
