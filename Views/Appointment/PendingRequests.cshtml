@@ -1,0 +1,70 @@
+@model IEnumerable<backend.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Pending Appointments";
+}
+
+<section class="vh-100">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-xl-10">
+                <div class="card" style="border-radius: 1rem; background-color: #424242;">
+                    <div class="card-body p-4 text-light">
+                        <h4 class="text-center mb-4" style="letter-spacing: 1px; color: #EB975E;">Pending Appointments</h4>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-center text-light">
+                                <thead style="background-color: #525252;">
+                                    <tr>
+                                        <th>Client</th>
+                                        <th>Date & Time</th>
+                                        <th>Service</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Any())
+                                    {
+                                        @foreach (var appointment in Model)
+                                        {
+                                            <tr>
+                                                <td>@appointment.User?.Username</td>
+                                                <td>@appointment.AppointmentDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                                <td>@appointment.Service?.Name</td>
+                                                <td>
+                                                    <form asp-action="ConfirmAppointment" method="post">
+                                                        <input type="hidden" name="appointmentId" value="@appointment.Id" />
+                                                        <button type="submit" class="btn" style="background-color: #EB975E;">Confirm</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="4" class="text-center">No pending appointments found.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <a asp-controller="Dashboard" asp-action="UserDashboard"
+                               class="btn btn-lg" style="background-color: #EB975E;">Back to Dashboard</a>
+                        </div>
+
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show w-75 mx-auto mt-3" role="alert">
+                                @TempData["SuccessMessage"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

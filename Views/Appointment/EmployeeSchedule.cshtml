@@ -1,0 +1,46 @@
+@model IEnumerable<backend.Models.Appointment>
+
+@{
+  ViewData["Title"] = "My Appointments";
+}
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card" style="border-radius: 1rem; background-color: #424242;">
+          <div class="card-body p-4 text-light">
+            <h4 class="text-center mb-4" style="letter-spacing: 1px; color: #EB975E;">My Schedule</h4>
+
+            <div class="table-responsive">
+              <table class="table table-bordered text-center text-light">
+                <thead style="background-color: #525252;">
+                  <tr>
+                    <th>Client</th>
+                    <th>Date & Time</th>
+                    <th>Service</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (var appointment in Model)
+                  {
+                    <tr>
+                      <td>@appointment.User?.Username</td>
+                      <td>@appointment.AppointmentDate.ToString("MMM dd, yyyy HH:mm")</td>
+                      <td>@appointment.Service?.Name</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <div class="text-center mt-4">
+              <a asp-controller="Dashboard" asp-action="UserDashboard" class="btn btn-lg"
+                style="background-color: #EB975E;">Back to Dashboard</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

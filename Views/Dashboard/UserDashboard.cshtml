@@ -14,6 +14,34 @@
             @if (Model.EmployeeId.HasValue)
             {
               <p class="text-center text-light">Welcome @Model.Employee?.Name</p>
+              <div class="row mt-5">
+                <div class="col-md-6 mb-4">
+                  <div class="menu-card card h-100" style="background-color: #525252;">
+                    <div class="card-body text-center p-4 d-flex flex-column">
+                      <h4 class="card-title mb-4" style="color: #EB975E;">Appointment Requests</h4>
+                      <p class="card-text text-light mb-4">View and manage your appointment requests.</p>
+                      <a asp-controller="Appointment" asp-action="PendingRequests"
+                        asp-route-employeeId="@Model.EmployeeId" class="btn btn-lg w-100"
+                        style="background-color: #EB975E;">
+                        View Requests
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div class="menu-card card h-100" style="background-color: #525252;">
+                    <div class="card-body text-center p-4 d-flex flex-column">
+                      <h4 class="card-title mb-4" style="color: #EB975E;">My Schedule</h4>
+                      <p class="card-text text-light mb-4">View your confirmed appointments.</p>
+                      <a asp-controller="Appointment" asp-action="EmployeeSchedule"
+                        asp-route-employeeId="@Model.EmployeeId" class="btn btn-lg w-100"
+                        style="background-color: #EB975E;">
+                        View Schedule
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
             }
             else
             {
@@ -24,7 +52,14 @@
                     <div class="card-body text-center p-4 d-flex flex-column">
                       <h4 class="card-title mb-4" style="color: #EB975E;">Book Appointment</h4>
                       <p class="card-text text-light mb-4">Schedule your next salon visit with your preferred stylist.</p>
-                      <a href="#" class="btn btn-lg w-100 mt-auto" style="background-color: #EB975E;">Book Now</a>
+                      <a asp-controller="Appointment" asp-action="Create" class="btn btn-lg w-100"
+                        style="background-color: #EB975E;">
+                        Book Now
+                      </a>
+                      <a asp-controller="Appointment" asp-action="Index" class="btn btn-lg w-100 mt-2"
+                        style="background-color: #EB975E;">
+                        View Appointments
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -44,6 +79,13 @@
                   </div>
                 </div>
               </div>
+              if (TempData["SuccessMessage"] != null)
+              {
+                <div class="alert alert-success alert-dismissible fade show w-75 mx-auto" role="alert">
+                  @TempData["SuccessMessage"]
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              }
             }
             <div class="row mt-4">
               <div class="col-12 d-flex justify-content-center">

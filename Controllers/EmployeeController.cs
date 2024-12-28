@@ -205,6 +205,12 @@ public class EmployeeController(ApplicationDbContext context) : Controller {
                 return RedirectToAction(nameof(Index));
             }
 
+            var hasAppointments = await _context.Appointments.AnyAsync(a => a.EmployeeId == id);
+            if (hasAppointments) {
+                TempData["InfoMessage"] = "Cannot delete employee because they have existing appointments.";
+                return RedirectToAction(nameof(Index));
+            }
+
             _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
 

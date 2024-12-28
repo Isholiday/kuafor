@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using backend.Data;
-using backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -102,6 +101,13 @@ public class UserController(ApplicationDbContext context) : Controller {
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null) return NotFound();
+
+            if (user.Employee != null) {
+                var appointments = await _context.Appointments
+                    .Where(a => a.EmployeeId == user.Employee.Id)
+                    .ToListAsync();
+                _context.Appointments.RemoveRange(appointments);
+            }
 
             user.EmployeeId = null;
             await _context.SaveChangesAsync();

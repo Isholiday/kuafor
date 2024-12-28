@@ -1,0 +1,38 @@
+@model backend.Models.Appointment
+
+@{
+  ViewData["Title"] = "Cancel Appointment";
+}
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-8">
+        <div class="card" style="border-radius: 1rem; background-color: #424242;">
+          <div class="card-body p-4 text-light">
+            <h4 class="text-center mb-4" style="letter-spacing: 1px; color: #EB975E;">Cancel Appointment</h4>
+
+            <div class="text-center mb-4">
+              <p>Are you sure you want to cancel this appointment?</p>
+              <p><strong>Date:</strong> @Model.AppointmentDate.ToString("MMM dd, yyyy HH:mm")</p>
+              <p><strong>Employee:</strong> @Model.Employee?.Name</p>
+              <p><strong>Service:</strong> @Model.Service?.Name</p>
+            </div>
+
+            <form asp-action="Delete" method="post">
+              <input type="hidden" asp-for="Id" />
+              <div class="text-center">
+                <button type="submit" class="btn btn-lg me-2" style="background-color: #dc3545; color: white;">
+                  Confirm Cancel
+                </button>
+                <a asp-action="Index" class="btn btn-lg" style="background-color: #EB975E;">
+                  Back
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

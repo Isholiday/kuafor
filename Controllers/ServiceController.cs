@@ -119,6 +119,13 @@ public class ServiceController(ApplicationDbContext context) : Controller {
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id) {
         try {
+            var hasAppointments = await _context.Appointments.AnyAsync(a => a.ServiceId == id);
+
+            if (hasAppointments) {
+                TempData["InfoMessage"] = "Service cannot be deleted because it has existing appointments.";
+                return RedirectToAction(nameof(Index));
+            }
+
             var service = await _context.Services.FindAsync(id);
             if (service == null) return NotFound();
 

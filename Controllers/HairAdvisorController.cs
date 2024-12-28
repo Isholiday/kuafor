@@ -24,7 +24,7 @@ public class HairAdvisorController(IConfiguration configuration) : Controller {
                 return View(nameof(Index), model);
             }
 
-            string[] allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+            string[] allowedTypes = { "image/jpeg", "image/jpg", "image/png" };
             if (!allowedTypes.Contains(model.Photo.ContentType.ToLower())) {
                 ModelState.AddModelError(string.Empty, "Please upload a valid image file (jpg, jpeg, or png)");
                 return View(nameof(Index), model);

@@ -1,0 +1,118 @@
+@model backend.Models.Appointment
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+  ViewData["Title"] = "Book Appointment";
+  var salons = ViewData["Salons"] as SelectList;
+}
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-8">
+        <div class="card" style="border-radius: 1rem; background-color: #424242;">
+          <div class="card-body p-4 text-light">
+            <h4 class="mb-4 text-center" style="letter-spacing: 1px; color: #EB975E;">Book Appointment</h4>
+            <div class="mb-3" id="availabilityTable" style="display: none;"></div>
+            <form asp-action="Create" asp-controller="Appointment" method="post">
+              <input type="hidden" name="userId" value="@Model.UserId" />
+
+              <div class="form-outline mb-4">
+                <label asp-for="SalonId" class="form-label"></label>
+                <select asp-for="SalonId" asp-items="salons" class="form-select form-select-lg">
+                  <option value="">Select Salon</option>
+                </select>
+                <span asp-validation-for="SalonId" class="text-danger mt-2"></span>
+              </div>
+
+              <div class="form-outline mb-4">
+                <label asp-for="EmployeeId" class="form-label">Employee</label>
+                <select asp-for="EmployeeId" class="form-select form-select-lg">
+                  <option value="">Select Employee</option>
+                </select>
+                <span asp-validation-for="EmployeeId" class="text-danger mt-2"></span>
+              </div>
+
+              <div class="form-outline mb-4">
+                <label asp-for="ServiceId" class="form-label">Service</label>
+                <select asp-for="ServiceId" class="form-select form-select-lg">
+                  <option value="">Select Service</option>
+                </select>
+                <span id="serviceDuration" class="text-light ms-2"></span>
+                <span asp-validation-for="ServiceId" class="text-danger mt-2"></span>
+              </div>
+
+              <div class="form-outline mb-4">
+                <label asp-for="AppointmentDate" class="form-label">Appointment Date/Time</label>
+                <input asp-for="AppointmentDate" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                  class="form-control form-control-lg" type="datetime-local" />
+                <span asp-validation-for="AppointmentDate" class="text-danger mt-2"></span>
+              </div>
+
+              <div class="text-center pt-1">
+                <button type="submit" class="btn btn-lg w-100" style="background-color: #EB975E;">
+                  Confirm Booking
+                </button>
+                <a asp-controller="Dashboard" asp-action="UserDashboard"
+                  class="btn btn-danger btn-lg w-100 mt-2">Cancel</a>
+              </div>
+              <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show mt-3"
+                role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+@section Scripts {
+  <script>
+    $(function () {
+      $('#SalonId').on('change', function () {
+        const salonId = $(this).val();
+        if (!salonId) {
+          $('#EmployeeId').empty().append('<option value="">Select Employee</option>');
+          $('#ServiceId').empty().append('<option value="">Select Service</option>');
+          $('#availabilityTable').hide();
+          return;
+        }
+
+        $.ajax({
+          url: '/Dashboard/Appointment/GetSalonData',
+          type: 'GET',
+          data: { salonId: salonId },
+          success: function (data) {
+            $('#EmployeeId').empty().append('<option value="">Select Employee</option>');
+            data.employees.forEach(function (employee) {
+              $('#EmployeeId').append(`<option value="${employee.id}">${employee.name}</option>`);
+            });
+
+            $('#ServiceId').empty().append('<option value="">Select Service</option>');
+            data.services.forEach(function (service) {
+              $('#ServiceId').append(`<option value="${service.id}" data-duration="${service.duration}">${service.name}</option>`);
+            });
+            $.get('/Dashboard/Appointment/GetAvailabilityTable', { salonId: salonId }, function (response) {
+              $('#availabilityTable').html(response).show();
+            });
+          },
+          error: function () {
+            alert('Error loading data. Please try again later.');
+          }
+        });
+      });
+
+      $('#ServiceId').on('change', function () {
+        const selected = $(this).find('option:selected');
+        const duration = selected.data('duration');
+        if (duration) {
+          $('#serviceDuration').text(`Duration: ${duration} minutes`);
+        } else {
+          $('#serviceDuration').text('');
+        }
+      });
+    });
+  </script>
+}
