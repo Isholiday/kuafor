@@ -15,28 +15,27 @@
             <div class="table-responsive">
               <table class="table table-bordered text-center text-light">
                 <thead style="background-color: #525252;">
-                  <tr>
-                    <th>Client</th>
-                    <th>Date & Time</th>
-                    <th>Service</th>
-                  </tr>
+                <tr>
+                  <th>Client</th>
+                  <th>Date & Time</th>
+                  <th>Service</th>
+                </tr>
                 </thead>
                 <tbody>
-                  @foreach (var appointment in Model)
-                  {
-                    <tr>
-                      <td>@appointment.User?.Username</td>
-                      <td>@appointment.AppointmentDate.ToString("MMM dd, yyyy HH:mm")</td>
-                      <td>@appointment.Service?.Name</td>
-                    </tr>
-                  }
+                @foreach (var appointment in Model) {
+                  <tr>
+                    <td>@appointment.User?.Username</td>
+                    <td>@appointment.AppointmentDate.ToString("MMM dd, yyyy HH:mm")</td>
+                    <td>@appointment.Service?.Name</td>
+                  </tr>
+                }
                 </tbody>
               </table>
             </div>
 
             <div class="text-center mt-4">
               <a asp-controller="Dashboard" asp-action="UserDashboard" class="btn btn-lg"
-                style="background-color: #EB975E;">Back to Dashboard</a>
+                 style="background-color: #EB975E;">Back to Dashboard</a>
             </div>
           </div>
         </div>

@@ -9,48 +9,46 @@ namespace backend.Controllers;
 [Authorize(Roles = "Admin")]
 [Route("/panel/[controller]")]
 public class UserController(ApplicationDbContext context) : Controller {
-    private readonly ApplicationDbContext _context = context;
-
     public async Task<IActionResult> Index() {
         try {
-            var users = await _context.Users
+            var users = await context.Users
                 .Include(u => u.Employee)
                 .ToListAsync();
             return View(users);
-        } catch (Exception) {
+        } catch {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
             return View();
         }
     }
 
-    [Route("make-admin/{id}")]
+    [Route("make-admin/{id:int}")]
     [HttpPost]
     public async Task<IActionResult> MakeAdmin(int id) {
         try {
-            var user = await _context.Users.FindAsync(id);
+            var user = await context.Users.FindAsync(id);
             if (user == null) return NotFound();
 
             user.IsAdmin = true;
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             TempData["SuccessMessage"] = "User has been made admin successfully.";
-        } catch (Exception) {
+        } catch {
             TempData["InfoMessage"] = "An error occurred while updating user status.";
         }
         return RedirectToAction(nameof(Index));
     }
 
-    [Route("revoke-admin/{id}")]
+    [Route("revoke-admin/{id:int}")]
     [HttpPost]
     public async Task<IActionResult> RevokeAdmin(int id) {
         try {
-            var user = await _context.Users.FindAsync(id);
+            var user = await context.Users.FindAsync(id);
             if (user == null) return NotFound();
 
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
             var isCurrentUser = currentUserId == id;
 
             user.IsAdmin = false;
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             if (isCurrentUser) {
                 Response.Cookies.Delete("JWT");
@@ -59,17 +57,17 @@ public class UserController(ApplicationDbContext context) : Controller {
 
             TempData["SuccessMessage"] = "Admin status has been revoked successfully.";
             return RedirectToAction(nameof(Index));
-        } catch (Exception) {
+        } catch {
             TempData["InfoMessage"] = "An error occurred while updating user status.";
             return RedirectToAction(nameof(Index));
         }
     }
 
-    [Route("select-employee/{id}")]
+    [Route("select-employee/{id:int}")]
     [HttpGet]
     public async Task<IActionResult> SelectEmployee(int id) {
-        var availableEmployees = await _context.Employees
-            .Where(e => !_context.Users.Any(u => u.EmployeeId == e.Id))
+        var availableEmployees = await context.Employees
+            .Where(e => !context.Users.Any(u => u.EmployeeId == e.Id))
             .ToListAsync();
 
         ViewBag.AvailableEmployees = availableEmployees;
@@ -79,41 +77,41 @@ public class UserController(ApplicationDbContext context) : Controller {
     [HttpPost]
     public async Task<IActionResult> ConfirmEmployee(int userId, int employeeId) {
         try {
-            var user = await _context.Users.FindAsync(userId);
+            var user = await context.Users.FindAsync(userId);
             if (user == null) return NotFound();
 
             user.EmployeeId = employeeId;
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "User has been assigned to employee successfully.";
-        } catch (Exception) {
+        } catch {
             TempData["InfoMessage"] = "An error occurred while updating user status.";
         }
         return RedirectToAction(nameof(Index));
     }
 
-    [Route("revoke-employee/{id}")]
+    [Route("revoke-employee/{id:int}")]
     [HttpPost]
     public async Task<IActionResult> RevokeEmployee(int id) {
         try {
-            var user = await _context.Users
+            var user = await context.Users
                 .Include(u => u.Employee)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null) return NotFound();
 
             if (user.Employee != null) {
-                var appointments = await _context.Appointments
+                var appointments = await context.Appointments
                     .Where(a => a.EmployeeId == user.Employee.Id)
                     .ToListAsync();
-                _context.Appointments.RemoveRange(appointments);
+                context.Appointments.RemoveRange(appointments);
             }
 
             user.EmployeeId = null;
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Employee status has been revoked successfully.";
-        } catch (Exception) {
+        } catch {
             TempData["InfoMessage"] = "An error occurred while updating user status.";
         }
         return RedirectToAction(nameof(Index));

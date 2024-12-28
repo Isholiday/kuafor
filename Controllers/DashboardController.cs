@@ -22,18 +22,17 @@ public class DashboardController(ApplicationDbContext context) : Controller {
 
             if (user == null) return RedirectToAction("Login", "Account");
 
-            if (!user.EmployeeId.HasValue) {
-                ViewBag.Salons = new SelectList(_context.Salons, "Id", "Name");
-                ViewBag.UserAppointments = await _context.Appointments
-                    .Include(a => a.Service)
-                    .Include(a => a.Employee)
-                    .Where(a => a.UserId == userId)
-                    .OrderByDescending(a => a.AppointmentDate)
-                    .ToListAsync();
-            }
+            if (user.EmployeeId.HasValue) return View(user);
+            ViewBag.Salons = new SelectList(_context.Salons, "Id", "Name");
+            ViewBag.UserAppointments = await _context.Appointments
+                .Include(a => a.Service)
+                .Include(a => a.Employee)
+                .Where(a => a.UserId == userId)
+                .OrderByDescending(a => a.AppointmentDate)
+                .ToListAsync();
 
             return View(user);
-        } catch (Exception) {
+        } catch {
             return RedirectToAction("Login", "Account");
         }
     }
@@ -74,6 +73,4 @@ public class DashboardController(ApplicationDbContext context) : Controller {
 
         return View(viewModel);
     }
-
-
 }

@@ -11,52 +11,49 @@
 <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
   <table class="table table-bordered text-center text-light mt-5 fs-5" style="width: 80%; margin: 0 auto;">
     <thead style="background-color: #424242;">
-      <tr>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Duration</th>
-        <th>Salon</th>
-        <th>Operations</th>
-      </tr>
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Duration</th>
+      <th>Salon</th>
+      <th>Operations</th>
+    </tr>
     </thead>
     <tbody>
-      @if (Model.Any())
-      {
-        @foreach (var item in Model)
-        {
-          <tr>
-            <td>@item.Name</td>
-            <td>@item.Price.ToString("C", new CultureInfo("tr-TR"))</td>
-            <td>
-              @{
-                var hours = item.Duration.Hours;
-                var minutes = item.Duration.Minutes;
-                var durationText = "";
-
-                if (hours > 0) durationText += $"{hours} hour{(hours == 1 ? "" : "s")}";
-
-                if (minutes > 0)
-                {
-                  if (hours > 0) durationText += " ";
-                  durationText += $"{minutes} minute{(minutes == 1 ? "" : "s")}";
-                }
-                @durationText
-              }
-            </td>
-            <td>@item.Salon?.Name</td>
-            <td>
-              <a class="btn btn-primary mt-1" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-              <a class="btn btn-danger mt-1" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-          </tr>
-        }
-      }
-      else
-      {
+    @if (Model.Any()) {
+      @foreach (var item in Model) {
         <tr>
-          <td colspan="5" class="text-center">No services found.</td>
+          <td>@item.Name</td>
+          <td>@item.Price.ToString("C", new CultureInfo("tr-TR"))</td>
+          <td>
+            @{
+              var hours = item.Duration.Hours;
+              var minutes = item.Duration.Minutes;
+              var durationText = "";
+
+              if (hours > 0) durationText += $"{hours} hour{(hours == 1 ? "" : "s")}";
+
+              if (minutes > 0) {
+                if (hours > 0) durationText += " ";
+                durationText += $"{minutes} minute{(minutes == 1 ? "" : "s")}";
+              }
+
+              @durationText
+            }
+          </td>
+          <td>@item.Salon?.Name</td>
+          <td>
+            <a class="btn btn-primary mt-1" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+            <a class="btn btn-danger mt-1" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+          </td>
         </tr>
       }
+    }
+    else {
+      <tr>
+        <td colspan="5" class="text-center">No services found.</td>
+      </tr>
+    }
     </tbody>
   </table>
 </div>

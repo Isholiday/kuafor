@@ -10,53 +10,47 @@
 <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
   <table class="table table-bordered text-center text-light mt-5 fs-5" style="width: 80%; margin: 0 auto;">
     <thead style="background-color: #424242;">
-      <tr>
-        <th>Name</th>
-        <th>Salon</th>
-        <th>Specialization</th>
-        <th>Skills</th>
-        <th>Availabilities</th>
-        <th>Operations</th>
-      </tr>
+    <tr>
+      <th>Name</th>
+      <th>Salon</th>
+      <th>Specialization</th>
+      <th>Skills</th>
+      <th>Availabilities</th>
+      <th>Operations</th>
+    </tr>
     </thead>
     <tbody>
-      @if (Model.Any())
-      {
-        @foreach (var item in Model)
-        {
-          <tr>
-            <td>@item.Name</td>
-            <td>@item.Salon?.Name</td>
-            <td>@item.Specialization</td>
-            <td>@string.Join(", ", item.Skills ?? new List<string>())</td>
-            <td>
-              @if (item.Availabilities != null && item.Availabilities.Any())
-              {
-                <ul class="list-unstyled mb-0">
-                  @foreach (var availability in item.Availabilities)
-                  {
-                    <li>@availability.Day: @availability.StartTime - @availability.EndTime</li>
-                  }
-                </ul>
-              }
-              else
-              {
-                <span>No availability set</span>
-              }
-            </td>
-            <td>
-              <a class="btn btn-primary mt-1" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-              <a class="btn btn-danger mt-1" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-          </tr>
-        }
-      }
-      else
-      {
+    @if (Model.Any()) {
+      @foreach (var item in Model) {
         <tr>
-          <td colspan="6" class="text-center">No employees found.</td>
+          <td>@item.Name</td>
+          <td>@item.Salon?.Name</td>
+          <td>@item.Specialization</td>
+          <td>@string.Join(", ", item.Skills)</td>
+          <td>
+            @if (item.Availabilities.Any()) {
+              <ul class="list-unstyled mb-0">
+                @foreach (var availability in item.Availabilities) {
+                  <li>@availability.Day: @availability.StartTime - @availability.EndTime</li>
+                }
+              </ul>
+            }
+            else {
+              <span>No availability set</span>
+            }
+          </td>
+          <td>
+            <a class="btn btn-primary mt-1" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+            <a class="btn btn-danger mt-1" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+          </td>
         </tr>
       }
+    }
+    else {
+      <tr>
+        <td colspan="6" class="text-center">No employees found.</td>
+      </tr>
+    }
     </tbody>
   </table>
 </div>

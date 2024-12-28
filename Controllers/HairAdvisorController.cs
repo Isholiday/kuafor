@@ -10,12 +10,9 @@ namespace backend.Controllers;
 [Route("/Dashboard/[controller]")]
 public class HairAdvisorController(IConfiguration configuration, ReplicateService replicateService) : Controller {
     private readonly string _apiKey = configuration["OpenAI:ApiKey"] ?? throw new InvalidOperationException("OpenAI API key not found in configuration");
-    private readonly ReplicateService _replicateService = replicateService;
 
     [HttpGet]
-    public IActionResult Index() {
-        return View(new HairAdvisorViewModel());
-    }
+    public IActionResult Index() => View(new HairAdvisorViewModel());
 
     [HttpPost]
     public async Task<IActionResult> Analyze(HairAdvisorViewModel model) {
@@ -36,28 +33,28 @@ public class HairAdvisorController(IConfiguration configuration, ReplicateServic
             var imageData = Convert.ToBase64String(ms.ToArray());
 
             ChatClient chatClient = new("gpt-4o", _apiKey);
-            ChatCompletion chatCompletion = chatClient.CompleteChat(
-            [
-                new SystemChatMessage("You are a hair style advisor AI. Analyze the uploaded photo and provide recommendations in this order: First mention their current hair features briefly. Then suggest 2-3 hairstyles that would complement their features, followed by 2-3 suitable hair colors. Write in flowing paragraphs without numbering or bullet points. Do not mention anything about maintenance, availability, or salon services. Keep the tone friendly and concise, focusing only on style and color suggestions."),
-                new UserChatMessage(
-                    ChatMessageContentPart.CreateTextPart("Based on this photo, what hairstyles and colors would suit me best? Please do not try to identify the person in the photo."),
-                    ChatMessageContentPart.CreateImagePart(new Uri($"data:image/jpeg;base64,{imageData}"))
-                ),
-            ],
-            new ChatCompletionOptions() {
-                MaxOutputTokenCount = 256,
-            }
+            ChatCompletion chatCompletion = await chatClient.CompleteChatAsync(
+                [
+                    new SystemChatMessage("You are a hairstyle advisor AI. Analyze the uploaded photo and provide recommendations in this order: First mention their current hair features briefly. Then suggest 2-3 hairstyles that would complement their features, followed by 2-3 suitable hair colors. Write in flowing paragraphs without numbering or bullet points. Do not mention anything about maintenance, availability, or salon services. Keep the tone friendly and concise, focusing only on style and color suggestions."),
+                    new UserChatMessage(
+                        ChatMessageContentPart.CreateTextPart("Based on this photo, what hairstyles and colors would suit me best? Please do not try to identify the person in the photo."),
+                        ChatMessageContentPart.CreateImagePart(new Uri($"data:image/jpeg;base64,{imageData}"))
+                    ),
+                ],
+                new ChatCompletionOptions() {
+                    MaxOutputTokenCount = 256,
+                }
             );
             model.RecommendationTextResult = chatCompletion.Content[0].Text;
-            model.RecommendationImageResults = await _replicateService
-           .GenerateHairStyles(imageData, $"Professional male headshot portrait photo, centered composition, head and shoulders view, {chatCompletion.Content[0].Text}, studio lighting, high-end salon photography, clear facial details, professional hairstyling, modern fashion photography style");
+            model.RecommendationImageResults = await replicateService
+                .GenerateHairStyles(imageData, $"Professional male headshot portrait photo, centered composition, head and shoulders view, {chatCompletion.Content[0].Text}, studio lighting, high-end salon photography, clear facial details, professional hairstyling, modern fashion photography style");
 
             return View(nameof(Index), model);
         } catch (UriFormatException) {
             ModelState.AddModelError(string.Empty, "The uploaded image is too large. Please upload a smaller image.");
             return View(nameof(Index), model);
-        } catch (Exception) {
-            ModelState.AddModelError(string.Empty, $"An error occurred while procsessing your request");
+        } catch {
+            ModelState.AddModelError(string.Empty, $"An error occurred while processing your request");
             return View(nameof(Index), model);
         }
     }

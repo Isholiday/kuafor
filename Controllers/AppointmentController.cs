@@ -16,10 +16,11 @@ public class AppointmentController(ApplicationDbContext context) : Controller {
     [HttpGet]
     [Route("")]
     public async Task<IActionResult> Index() {
+        var userId = GetUserId();
         var appointments = await _context.Appointments
             .Include(a => a.Employee)
             .Include(a => a.Service)
-            .Where(a => a.UserId == GetUserId())
+            .Where(a => a.UserId == userId)
             .OrderBy(a => a.AppointmentDate)
             .ToListAsync();
 
@@ -32,7 +33,7 @@ public class AppointmentController(ApplicationDbContext context) : Controller {
         try {
             ViewData["Salons"] = new SelectList(_context.Salons, "Id", "Name");
             return View(new Appointment());
-        } catch (Exception) {
+        } catch {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
             return View(new Appointment());
         }
@@ -80,17 +81,16 @@ public class AppointmentController(ApplicationDbContext context) : Controller {
                 .OrderBy(a => a.AppointmentDate)
                 .ToListAsync();
 
-            bool isValidTimeSlot = true;
+            var isValidTimeSlot = true;
             foreach (var existing in existingAppointments) {
                 var existingStart = existing.AppointmentDate.TimeOfDay;
                 var existingEnd = existingStart.Add(existing.Service!.Duration);
 
-                if ((appointmentTime >= existingStart && appointmentTime < existingEnd) ||
-                    (appointmentEndTime > existingStart && appointmentEndTime <= existingEnd) ||
-                    (appointmentTime <= existingStart && appointmentEndTime >= existingEnd)) {
-                    isValidTimeSlot = false;
-                    break;
-                }
+                if ((appointmentTime < existingStart || appointmentTime >= existingEnd) &&
+                    (appointmentEndTime <= existingStart || appointmentEndTime > existingEnd) &&
+                    (appointmentTime > existingStart || appointmentEndTime < existingEnd)) continue;
+                isValidTimeSlot = false;
+                break;
             }
 
             if (!isValidTimeSlot) {
@@ -109,12 +109,12 @@ public class AppointmentController(ApplicationDbContext context) : Controller {
             } else {
                 ViewData["Salons"] = new SelectList(_context.Salons, "Id", "Name", appointment.SalonId);
                 ModelState.AddModelError(string.Empty,
-                    $"Appointment time {appointment.AppointmentDate.ToString("HH:mm")} " +
+                    $"Appointment time {appointment.AppointmentDate:HH:mm} " +
                     $"with duration of {service.Duration.TotalMinutes} minutes " +
-                    $"must be within employee's availability hours ({availability.StartTime.ToString(@"hh\:mm")} - {availability.EndTime.ToString(@"hh\:mm")}).");
+                    $@"must be within employee's availability hours ({availability.StartTime:hh\:mm} - {availability.EndTime:hh\:mm}).");
                 return View(appointment);
             }
-        } catch (Exception) {
+        } catch {
             ModelState.AddModelError(string.Empty, "An error occurred while scheduling the appointment.");
             return View(appointment);
         }
@@ -178,11 +178,11 @@ public class AppointmentController(ApplicationDbContext context) : Controller {
     [HttpPost("ConfirmAppointment")]
     public async Task<IActionResult> ConfirmAppointment(int appointmentId) {
         var appointment = await _context.Appointments.FindAsync(appointmentId);
-        if (appointment != null) {
-            appointment.IsConfirmed = true;
-            await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = "Appointment confirmed successfully!";
-        }
+        if (appointment == null) return RedirectToAction("PendingRequests", new { employeeId = appointment!.EmployeeId });
+        
+        appointment.IsConfirmed = true;
+        await _context.SaveChangesAsync();
+        TempData["SuccessMessage"] = "Appointment confirmed successfully!";
         return RedirectToAction("PendingRequests", new { employeeId = appointment!.EmployeeId });
     }
 
@@ -195,15 +195,12 @@ public class AppointmentController(ApplicationDbContext context) : Controller {
             .Include(a => a.Service)
             .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
-        if (appointment == null)
-            return NotFound();
+        if (appointment == null) return NotFound();
 
-        if (appointment.IsConfirmed) {
-            TempData["InfoMessage"] = "Confirmed appointments cannot be cancelled.";
-            return RedirectToAction(nameof(Index));
-        }
+        if (!appointment.IsConfirmed) return View(appointment);
+        TempData["InfoMessage"] = "Confirmed appointments cannot be cancelled.";
+        return RedirectToAction(nameof(Index));
 
-        return View(appointment);
     }
 
     [Route("Delete")]
@@ -213,8 +210,7 @@ public class AppointmentController(ApplicationDbContext context) : Controller {
         var appointment = await _context.Appointments
             .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
-        if (appointment == null)
-            return NotFound();
+        if (appointment == null) return NotFound();
 
         if (appointment.IsConfirmed) {
             TempData["InfoMessage"] = "Confirmed appointments cannot be cancelled.";

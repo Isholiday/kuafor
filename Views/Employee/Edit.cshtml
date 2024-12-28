@@ -13,18 +13,18 @@
           <div class="card-body p-4 text-light">
             <h4 class="mb-4 text-center" style="letter-spacing: 1px; color: #EB975E;">Edit Employee</h4>
             <form asp-action="Edit" method="post">
-              <input type="hidden" asp-for="Id" />
+              <input type="hidden" asp-for="Id"/>
 
               <div class="form-outline mb-4">
                 <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control form-control-lg" />
+                <input asp-for="Name" class="form-control form-control-lg"/>
                 <span asp-validation-for="Name" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="SalonId" class="form-label">Salon</label>
                 <select asp-for="SalonId" class="form-select form-select-lg"
-                  asp-items="@(ViewData["Salons"] as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>()))">
+                        asp-items="@(ViewData["Salons"] as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>()))">
                   <option value="">Select a Salon</option>
                 </select>
                 <span asp-validation-for="SalonId" class="text-danger mt-2"></span>
@@ -32,28 +32,26 @@
 
               <div class="form-outline mb-4">
                 <label asp-for="Specialization" class="form-label"></label>
-                <input asp-for="Specialization" class="form-control form-control-lg" />
+                <input asp-for="Specialization" class="form-control form-control-lg"/>
                 <span asp-validation-for="Specialization" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="Skills" class="form-label"></label>
                 <input asp-for="Skills" class="form-control form-control-lg" value="@Model.Skills.ToCommaString()"
-                  placeholder="Enter skills separated by commas" />
+                       placeholder="Enter skills separated by commas"/>
                 <span asp-validation-for="Skills" class="text-danger mt-2"></span>
               </div>
 
               <div class="mb-4 mt-2">
                 <span class="form-label">Availabilities</span>
                 <div id="availabilities-container" class="py-2">
-                  @for (int i = 0; i < Model.Availabilities.Count; i++)
-                  {
+                  @for (int i = 0; i < Model.Availabilities.Count; i++) {
                     <div class="availability-item row g-3">
                       <div class="col-md-3">
                         <label class="form-label">Day</label>
                         <select class="form-select" name="Availabilities[@i].Day">
-                          @foreach (var day in Enum.GetValues(typeof(DayOfWeek)))
-                          {
+                          @foreach (var day in Enum.GetValues(typeof(DayOfWeek))) {
                             <option value="@day">@day</option>
                           }
                         </select>
@@ -61,12 +59,12 @@
                       <div class="col-md-3">
                         <label class="form-label">Start Time</label>
                         <input type="time" name="Availabilities[@i].StartTime" class="form-control"
-                          value="@Model.Availabilities[i].StartTime.ToString(@"hh\:mm")" />
+                               value="@Model.Availabilities[i].StartTime.ToString(@"hh\:mm")"/>
                       </div>
                       <div class="col-md-3">
                         <label class="form-label">End Time</label>
                         <input type="time" name="Availabilities[@i].EndTime" class="form-control"
-                          value="@Model.Availabilities[i].EndTime.ToString(@"hh\:mm")" />
+                               value="@Model.Availabilities[i].EndTime.ToString(@"hh\:mm")"/>
                       </div>
                       <div class="col-md-3 d-flex align-items-end">
                         <button type="button" class="btn btn-danger remove-availability">

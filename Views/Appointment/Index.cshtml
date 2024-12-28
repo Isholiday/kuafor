@@ -15,48 +15,43 @@
             <div class="table-responsive">
               <table class="table table-bordered text-center text-light">
                 <thead style="background-color: #525252;">
-                  <tr>
-                    <th>Date & Time</th>
-                    <th>Employee</th>
-                    <th>Service</th>
-                    <th>Status</th>
-                    <th>Operations</th>
-                  </tr>
+                <tr>
+                  <th>Date & Time</th>
+                  <th>Employee</th>
+                  <th>Service</th>
+                  <th>Status</th>
+                  <th>Operations</th>
+                </tr>
                 </thead>
                 <tbody>
-                  @if (Model.Any())
-                  {
-                    @foreach (var item in Model)
-                    {
-                      <tr>
-                        <td>@item.AppointmentDate.ToString("MMM dd, yyyy HH:mm")</td>
-                        <td>@item.Employee?.Name</td>
-                        <td>@item.Service?.Name</td>
-                        <td>@(item.IsConfirmed ? "Confirmed" : "Pending")</td>
-                        <td>
-                          @if (!item.IsConfirmed)
-                          {
-                            <form asp-action="Delete" method="post" style="display: inline;">
-                              <input type="hidden" name="id" value="@item.Id" />
-                              <button type="submit" class="btn btn-danger mt-1">Cancel</button>
-                            </form>
-                          }
-                        </td>
-                      </tr>
-                    }
-                  }
-                  else
-                  {
+                @if (Model.Any()) {
+                  @foreach (var item in Model) {
                     <tr>
-                      <td colspan="5s" class="text-center">No appointments found.</td>
+                      <td>@item.AppointmentDate.ToString("MMM dd, yyyy HH:mm")</td>
+                      <td>@item.Employee?.Name</td>
+                      <td>@item.Service?.Name</td>
+                      <td>@(item.IsConfirmed ? "Confirmed" : "Pending")</td>
+                      <td>
+                        @if (!item.IsConfirmed) {
+                          <form asp-action="Delete" method="post" style="display: inline;">
+                            <input type="hidden" name="id" value="@item.Id"/>
+                            <button type="submit" class="btn btn-danger mt-1">Cancel</button>
+                          </form>
+                        }
+                      </td>
                     </tr>
                   }
+                }
+                else {
+                  <tr>
+                    <td colspan="5s" class="text-center">No appointments found.</td>
+                  </tr>
+                }
                 </tbody>
               </table>
             </div>
             @{
-              if (TempData["SuccessMessage"] != null)
-              {
+              if (TempData["SuccessMessage"] != null) {
                 <div class="alert alert-success alert-dismissible fade show w-75 mx-auto" role="alert">
                   @TempData["SuccessMessage"]
                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -64,8 +59,7 @@
               }
             }
             @{
-              if (TempData["ErrorMessage"] != null)
-              {
+              if (TempData["ErrorMessage"] != null) {
                 <div class="alert alert-danger alert-dismissible fade show w-75 mx-auto" role="alert">
                   @TempData["ErrorMessage"]
                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -74,7 +68,7 @@
             }
             <div class="text-center mt-4">
               <a asp-controller="Dashboard" asp-action="UserDashboard" class="btn btn-lg"
-                style="background-color: #EB975E;">Back to Dashboard</a>
+                 style="background-color: #EB975E;">Back to Dashboard</a>
             </div>
           </div>
         </div>

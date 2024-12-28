@@ -12,29 +12,29 @@
           <div class="card-body p-4 text-light">
             <h4 class="mb-4 text-center" style="letter-spacing: 1px; color: #EB975E;">Edit Salon</h4>
             <form asp-action="Edit" method="post">
-              <input type="hidden" asp-for="Id" />
+              <input type="hidden" asp-for="Id"/>
 
               <div class="form-outline mb-4">
                 <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control form-control-lg" />
+                <input asp-for="Name" class="form-control form-control-lg"/>
                 <span asp-validation-for="Name" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="Address" class="form-label"></label>
-                <input asp-for="Address" class="form-control form-control-lg" />
+                <input asp-for="Address" class="form-control form-control-lg"/>
                 <span asp-validation-for="Address" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
-                <input asp-for="PhoneNumber" class="form-control form-control-lg" />
+                <input asp-for="PhoneNumber" class="form-control form-control-lg"/>
                 <span asp-validation-for="PhoneNumber" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" type="email" class="form-control form-control-lg" />
+                <input asp-for="Email" type="email" class="form-control form-control-lg"/>
                 <span asp-validation-for="Email" class="text-danger mt-2"></span>
               </div>
 
@@ -42,13 +42,13 @@
                 <div class="col-md-6">
                   <label asp-for="OpeningTime" class="form-label">Opening Time</label>
                   <input asp-for="OpeningTime" type="time" class="form-control form-control-lg"
-                    value="@Model.OpeningTime.ToString(@"hh\:mm")" />
+                         value="@Model.OpeningTime.ToString(@"hh\:mm")"/>
                   <span asp-validation-for="OpeningTime" class="text-danger mt-2"></span>
                 </div>
                 <div class="col-md-6">
                   <label asp-for="ClosingTime" class="form-label">Closing Time</label>
                   <input asp-for="ClosingTime" type="time" class="form-control form-control-lg"
-                    value="@Model.ClosingTime.ToString(@"hh\:mm")" />
+                         value="@Model.ClosingTime.ToString(@"hh\:mm")"/>
                   <span asp-validation-for="ClosingTime" class="text-danger mt-2"></span>
                 </div>
               </div>
@@ -71,8 +71,8 @@
   <script>
     $(document).ready(function () {
       $('form').on('submit', function (e) {
-        var openingTime = $('#OpeningTime').val();
-        var closingTime = $('#ClosingTime').val();
+        const openingTime = $('#OpeningTime').val();
+        const closingTime = $('#ClosingTime').val();
 
         if (openingTime >= closingTime) {
           e.preventDefault();

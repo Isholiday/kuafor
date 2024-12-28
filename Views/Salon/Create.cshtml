@@ -14,37 +14,37 @@
             <form asp-action="Create" method="post">
               <div class="form-outline mb-4">
                 <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control form-control-lg" />
+                <input asp-for="Name" class="form-control form-control-lg"/>
                 <span asp-validation-for="Name" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="Address" class="form-label"></label>
-                <input asp-for="Address" class="form-control form-control-lg" />
+                <input asp-for="Address" class="form-control form-control-lg"/>
                 <span asp-validation-for="Address" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
-                <input asp-for="PhoneNumber" class="form-control form-control-lg" />
+                <input asp-for="PhoneNumber" class="form-control form-control-lg"/>
                 <span asp-validation-for="PhoneNumber" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" type="email" class="form-control form-control-lg" />
+                <input asp-for="Email" type="email" class="form-control form-control-lg"/>
                 <span asp-validation-for="Email" class="text-danger mt-2"></span>
               </div>
 
               <div class="row mb-4">
                 <div class="col-md-6">
                   <label asp-for="OpeningTime" class="form-label">Opening Time</label>
-                  <input asp-for="OpeningTime" type="time" class="form-control form-control-lg" />
+                  <input asp-for="OpeningTime" type="time" class="form-control form-control-lg"/>
                   <span asp-validation-for="OpeningTime" class="text-danger mt-2"></span>
                 </div>
                 <div class="col-md-6">
                   <label asp-for="ClosingTime" class="form-label">Closing Time</label>
-                  <input asp-for="ClosingTime" type="time" class="form-control form-control-lg" />
+                  <input asp-for="ClosingTime" type="time" class="form-control form-control-lg"/>
                   <span asp-validation-for="ClosingTime" class="text-danger mt-2"></span>
                 </div>
               </div>
@@ -67,13 +67,13 @@
   <script>
     $(document).ready(function () {
       $('form').on('submit', function (e) {
-        var openingTime = $('#OpeningTime').val();
-        var closingTime = $('#ClosingTime').val();
+        const openingTime = $('#OpeningTime').val();
+        const closingTime = $('#ClosingTime');
 
-        if (openingTime >= closingTime) {
+        if (openingTime >= closingTime.val()) {
           e.preventDefault();
           $('#timeError').remove();
-          $('#ClosingTime').after('<span id="timeError" class="text-danger mt-2">Closing time must be after opening time</span>');
+          closingTime.after('<span id="timeError" class="text-danger mt-2">Closing time must be after opening time</span>');
         }
       });
     });

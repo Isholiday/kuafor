@@ -15,14 +15,14 @@
             <form asp-action="Create" method="post">
               <div class="form-outline mb-4">
                 <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control form-control-lg" />
+                <input asp-for="Name" class="form-control form-control-lg"/>
                 <span asp-validation-for="Name" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="SalonId" class="form-label">Salon</label>
                 <select asp-for="SalonId" class="form-select form-select-lg"
-                  asp-items="@(ViewData["Salons"] as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>()))">
+                        asp-items="@(ViewData["Salons"] as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>()))">
                   <option value="">Select a Salon</option>
                 </select>
                 <span asp-validation-for="SalonId" class="text-danger mt-2"></span>
@@ -30,40 +30,38 @@
 
               <div class="form-outline mb-4">
                 <label asp-for="Specialization" class="form-label"></label>
-                <input asp-for="Specialization" class="form-control form-control-lg" />
+                <input asp-for="Specialization" class="form-control form-control-lg"/>
                 <span asp-validation-for="Specialization" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="Skills" class="form-label"></label>
                 <input asp-for="Skills" class="form-control form-control-lg" value="@Model.Skills.ToCommaString()"
-                  placeholder="Enter skills separated by commas" />
+                       placeholder="Enter skills separated by commas"/>
                 <span asp-validation-for="Skills" class="text-danger mt-2"></span>
               </div>
 
               <div class="mb-4 mt-2">
                 <span class="form-label">Availabilities</span>
                 <div id="availabilities-container" class="py-2">
-                  @for (int i = 0; i < Model.Availabilities.Count; i++)
-                  {
+                  @for (int i = 0; i < Model.Availabilities.Count; i++) {
                     <div class="availability-item row g-3">
                       <div class="col-md-3">
                         <label class="form-label">Day</label>
                         <select class="form-select" name="Availabilities[@i].Day">
                           <option value="">Select a day</option>
-                          @foreach (var day in Enum.GetValues(typeof(DayOfWeek)))
-                          {
+                          @foreach (var day in Enum.GetValues(typeof(DayOfWeek))) {
                             <option value="@day">@day</option>
                           }
                         </select>
                       </div>
                       <div class="col-md-3">
                         <label class="form-label">Start Time</label>
-                        <input type="time" name="Availabilities[@i].StartTime" class="form-control" />
+                        <input type="time" name="Availabilities[@i].StartTime" class="form-control"/>
                       </div>
                       <div class="col-md-3">
                         <label class="form-label">End Time</label>
-                        <input type="time" name="Availabilities[@i].EndTime" class="form-control" />
+                        <input type="time" name="Availabilities[@i].EndTime" class="form-control"/>
                       </div>
                       <div class="col-md-3" d-flex align-items-end>
                         <button type="button" class="btn btn-danger remove-availability">

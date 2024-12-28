@@ -14,19 +14,19 @@
             <form asp-action="Create" method="post">
               <div class="form-outline mb-4">
                 <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control form-control-lg" />
+                <input asp-for="Name" class="form-control form-control-lg"/>
                 <span asp-validation-for="Name" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="Price" class="form-label"></label>
-                <input asp-for="Price" type="number" step="0.01" class="form-control form-control-lg" />
+                <input asp-for="Price" type="number" step="0.01" class="form-control form-control-lg"/>
                 <span asp-validation-for="Price" class="text-danger mt-2"></span>
               </div>
 
               <div class="form-outline mb-4">
                 <label asp-for="Duration" class="form-label"></label>
-                <input asp-for="Duration" type="time" class="form-control form-control-lg" />
+                <input asp-for="Duration" type="time" class="form-control form-control-lg"/>
                 <span asp-validation-for="Duration" class="text-danger mt-2"></span>
               </div>
 

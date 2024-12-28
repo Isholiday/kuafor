@@ -4,25 +4,23 @@ using backend.Services;
 using backend.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Controllers;
 public class AccountController(ApplicationDbContext context, JwtService jwtService) : Controller {
-
-    private readonly ApplicationDbContext _context = context;
-    private readonly JwtService _jwtService = jwtService;
-
     public IActionResult Index() { return RedirectToAction("Login"); }
 
     [HttpGet]
     public IActionResult Login() {
         var token = Request.Cookies["JWT"];
-        if (token != null && _jwtService.ValidateToken(token, out var principal)) {
-            var role = principal?.FindFirst(ClaimTypes.Role)?.Value;
-            return role == "Admin"
-                ? RedirectToAction("AdminDashboard", "Dashboard")
-                : RedirectToAction("UserDashboard", "Dashboard");
-        }
-        return View();
+        if (token == null) return View();
+        var principal = jwtService.ValidateToken(token);
+        if (principal == null) return View();
+        var role = principal.FindFirst(ClaimTypes.Role);
+        if (role == null) return View();
+        return role.Value == "Admin"
+            ? RedirectToAction("AdminDashboard", "Dashboard")
+            : RedirectToAction("UserDashboard", "Dashboard");
     }
 
     [HttpPost]
@@ -30,14 +28,14 @@ public class AccountController(ApplicationDbContext context, JwtService jwtServi
         if (!ModelState.IsValid) return View(model);
 
         try {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
             if (user == null || !PasswordEncryption.VerifyPassword(model.Password!, user.Password!)) {
                 ModelState.AddModelError(string.Empty, "Invalid username or password.");
                 return View(model);
             }
 
             var role = user.IsAdmin ? "Admin" : "User";
-            var token = _jwtService.GenerateToken(user.Id, user.Username!, role);
+            var token = jwtService.GenerateToken(user.Id, user.Username!, role);
 
             Response.Cookies.Append("JWT", token, new CookieOptions {
                 HttpOnly = true,
@@ -49,7 +47,7 @@ public class AccountController(ApplicationDbContext context, JwtService jwtServi
             return user.IsAdmin
                 ? RedirectToAction("AdminDashboard", "Dashboard")
                 : RedirectToAction("UserDashboard", "Dashboard");
-        } catch (Exception) {
+        } catch {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
             return View(model);
         }
@@ -63,24 +61,24 @@ public class AccountController(ApplicationDbContext context, JwtService jwtServi
         if (!ModelState.IsValid) return View(model);
 
         try {
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
+            var existingUser = await context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
             if (existingUser != null) {
                 ModelState.AddModelError(string.Empty, "Username is already taken.");
                 return View(model);
             }
 
-            var existingEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            var existingEmail = await context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
             if (existingEmail != null) {
                 ModelState.AddModelError(string.Empty, "Email is already in use.");
                 return View(model);
             }
 
-            _context.Users.Add(PasswordEncryption.HashPassword(model));
-            await _context.SaveChangesAsync();
+            context.Users.Add(PasswordEncryption.HashPassword(model));
+            await context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Registration successful! You can log in now.";
 
             return RedirectToAction("Login");
-        } catch (Exception) {
+        } catch {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
             return View(model);
         }

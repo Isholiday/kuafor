@@ -6,51 +6,44 @@
 <div class="table-responsive mt-4" style="max-height: 300px; overflow-y: auto;">
   <table class="table table-bordered text-center text-light" style="width: 100%; margin: 0 auto;">
     <thead style="background-color: #525252;">
-      <tr>
-        <th>Employee</th>
-        <th>Available Times</th>
-      </tr>
+    <tr>
+      <th>Employee</th>
+      <th>Available Times</th>
+    </tr>
     </thead>
     <tbody>
-      @if (Model.Any())
-      {
-        @foreach (var employee in Model)
-        {
-          <tr>
-            <td>@employee.Name</td>
-            <td>
-              @if (employee.Availabilities != null && employee.Availabilities.Any())
-              {
-                <ul class="list-unstyled mb-0">
-                  @foreach (var availability in employee.Availabilities.OrderBy(a => a.Day))
-                  {
-                    var bookedSlots = appointments?
+    @if (Model.Any()) {
+      @foreach (var employee in Model) {
+        <tr>
+          <td>@employee.Name</td>
+          <td>
+            @if (employee.Availabilities.Any()) {
+              <ul class="list-unstyled mb-0">
+                @foreach (var availability in employee.Availabilities.OrderBy(a => a.Day)) {
+                  var bookedSlots = appointments?
                     .Where(a => a.EmployeeId == employee.Id
-                    && a.AppointmentDate.DayOfWeek == availability.Day)
+                                && a.AppointmentDate.DayOfWeek == availability.Day)
                     .ToList();
 
-                    if (bookedSlots == null || !bookedSlots.Any())
-                    {
-                      <li>@availability.Day: @availability.StartTime.ToString(@"hh\:mm") -
-                        @availability.EndTime.ToString(@"hh\:mm")</li>
-                    }
+                  if (bookedSlots == null || !bookedSlots.Any()) {
+                    <li>@availability.Day: @availability.StartTime.ToString(@"hh\:mm") -
+                      @availability.EndTime.ToString(@"hh\:mm")</li>
                   }
-                </ul>
-              }
-              else
-              {
-                <span>No availability set</span>
-              }
-            </td>
-          </tr>
-        }
-      }
-      else
-      {
-        <tr>
-          <td colspan="2" class="text-center">No employees found for this salon.</td>
+                }
+              </ul>
+            }
+            else {
+              <span>No availability set</span>
+            }
+          </td>
         </tr>
       }
+    }
+    else {
+      <tr>
+        <td colspan="2" class="text-center">No employees found for this salon.</td>
+      </tr>
+    }
     </tbody>
   </table>
 </div>

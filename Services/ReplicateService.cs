@@ -19,7 +19,7 @@ public class ReplicateService {
     public async Task<List<string>> GenerateHairStyles(string imageData, string prompt) {
         var results = new List<string>();
 
-        for (int i = 0; i < 3; i++) {
+        for (var i = 0; i < 3; i++) {
             try {
                 var imageUrl = imageData.StartsWith("data:image")
                     ? imageData
@@ -28,7 +28,7 @@ public class ReplicateService {
                 var requestBody = JsonSerializer.Serialize(new {
                     version = MODEL_VERSION,
                     input = new {
-                        prompt = prompt,
+                        prompt,
                         image = imageUrl,
                         num_inference_steps = 50,
                         guidance_scale = 7.5,
@@ -58,12 +58,10 @@ public class ReplicateService {
                     var statusJson = await response.Content.ReadAsStringAsync();
                     var status = JsonSerializer.Deserialize<JsonElement>(statusJson);
 
-                    if (status.GetProperty("status").GetString() == "succeeded") {
-                        var output = status.GetProperty("output")[0].GetString();
-                        if (output != null)
-                            results.Add(output);
-                        break;
-                    }
+                    if (status.GetProperty("status").GetString() != "succeeded") continue;
+                    var output = status.GetProperty("output")[0].GetString();
+                    if (output != null) results.Add(output);
+                    break;
                 }
             } catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity) {
                 throw new InvalidOperationException("Invalid image format or request parameters");

@@ -10,7 +10,7 @@
       <div class="col col-xl-10">
         <div class="card" style="border-radius: 1rem; background-color: #424242;">
           <div class="card-body p-4 text-light">
-            <h2 class="text-center" style="color: #EB975E;">Hair Style Advisor</h2>
+            <h2 class="text-center" style="color: #EB975E;">Hairstyle Advisor</h2>
 
             <form asp-action="Analyze" method="post" enctype="multipart/form-data">
               <div class="row justify-content-center">
@@ -21,7 +21,7 @@
                         <label asp-for="Photo" class="form-label mb-0"></label>
                       </div>
                       <div class="col-auto">
-                        <input asp-for="Photo" class="form-control" type="file" accept="image/*" />
+                        <input asp-for="Photo" class="form-control" type="file" accept="image/*"/>
                       </div>
                     </div>
                     <div class="text-center">
@@ -41,19 +41,18 @@
                       </span>
                     </button>
                     <a asp-controller="Dashboard" asp-action="UserDashboard"
-                      class="btn btn-danger btn-lg w-100 mt-2">Cancel</a>
+                       class="btn btn-danger btn-lg w-100 mt-2">Cancel</a>
                   </div>
 
                   <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show mt-3"
-                    role="alert">
+                       role="alert">
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                   </div>
                 </div>
               </div>
             </form>
 
-            @if (!string.IsNullOrEmpty(Model.RecommendationTextResult))
-            {
+            @if (!string.IsNullOrEmpty(Model.RecommendationTextResult)) {
               <h4 class="my-4 text-center" style="color: #EB975E;">Your Recommendations</h4>
               <div style="max-height: calc(100vh - 450px); overflow-y: auto; overflow-x: hidden;">
                 <div class="card mb-4" style="background-color: #525252;">
@@ -61,17 +60,15 @@
                     <p class="text-light fs-5">@Model.RecommendationTextResult</p>
                   </div>
                 </div>
-                @if (Model.RecommendationImageResults?.Any() == true)
-                {
+                @if (Model.RecommendationImageResults?.Any() == true) {
                   <div class="row g-4">
-                    @foreach (var imageUrl in Model.RecommendationImageResults)
-                    {
+                    @foreach (var imageUrl in Model.RecommendationImageResults) {
                       <div class="col-md-4">
                         <div class="card h-100" style="background-color: #525252;">
                           <div class="card-body text-center">
                             <h5 class="card-title text-light mb-3">Style Option</h5>
                             <img src="@imageUrl" alt="AI Generated Hairstyle" class="img-fluid rounded"
-                              style="max-height: 300px; object-fit: cover;" />
+                                 style="max-height: 300px; object-fit: cover;"/>
                           </div>
                         </div>
                       </div>

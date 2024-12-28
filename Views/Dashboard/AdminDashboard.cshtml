@@ -20,31 +20,30 @@
             <div class="table-responsive">
               <table class="table table-bordered text-center text-light">
                 <thead style="background-color: #525252;">
-                  <tr>
-                    <th>Employee</th>
-                    <th>Appointments</th>
-                    <th>Total Hours</th>
-                    <th>Expected Revenue</th>
-                  </tr>
+                <tr>
+                  <th>Employee</th>
+                  <th>Appointments</th>
+                  <th>Total Hours</th>
+                  <th>Expected Revenue</th>
+                </tr>
                 </thead>
                 <tbody>
-                  @foreach (var employee in Model)
-                  {
-                    <tr>
-                      <td>@employee.EmployeeName</td>
-                      <td>@employee.AppointmentCount</td>
-                      <td>@employee.TotalHours.ToString("F1")</td>
-                      <td>₺@employee.Revenue.ToString("F2")</td>
-                    </tr>
-                  }
+                @foreach (var employee in Model) {
+                  <tr>
+                    <td>@employee.EmployeeName</td>
+                    <td>@employee.AppointmentCount</td>
+                    <td>@employee.TotalHours.ToString("F1")</td>
+                    <td>₺@employee.Revenue.ToString("F2")</td>
+                  </tr>
+                }
                 </tbody>
                 <tfoot style="background-color: #525252;">
-                  <tr>
-                    <td><strong>Total</strong></td>
-                    <td>@Model.Sum(e => e.AppointmentCount)</td>
-                    <td>@Model.Sum(e => e.TotalHours).ToString("F1")</td>
-                    <td>₺@Model.Sum(e => e.Revenue).ToString("F2")</td>
-                  </tr>
+                <tr>
+                  <td><strong>Total</strong></td>
+                  <td>@Model.Sum(e => e.AppointmentCount)</td>
+                  <td>@Model.Sum(e => e.TotalHours).ToString("F1")</td>
+                  <td>₺@Model.Sum(e => e.Revenue).ToString("F2")</td>
+                </tr>
                 </tfoot>
               </table>
             </div>

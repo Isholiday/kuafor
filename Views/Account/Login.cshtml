@@ -10,16 +10,16 @@
         <div class="card" style="border-radius: 1rem; background-color: #424242;">
           <div class="row g-0">
             <div class="col-md-6 col-lg-5 d-none d-md-block">
-              <img src="../photos/barber.webp" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+              <img src="../photos/barber.webp" class="img-fluid" style="border-radius: 1rem 0 0 1rem;"/>
             </div>
             <div class="col-md-6 col-lg-7 d-flex align-items-center">
               <div class="card-body p-4 p-lg-5 text-light">
                 <form asp-action="Login" asp-controller="Account" method="post">
-                  <h5 class="fw-normal mb-4 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
+                  <h5 class="fw-normal mb-4 pb-3" style="letter-spacing: 1px;">Sign in to your account</h5>
 
                   <div class="form-outline mb-4">
                     <label asp-for="Username" class="form-label"></label>
-                    <input asp-for="Username" class="form-control form-control-lg" />
+                    <input asp-for="Username" class="form-control form-control-lg"/>
                     <div class="mt-2" style="height: 2px;">
                       <span asp-validation-for="Username" class="text-danger"></span>
                     </div>
@@ -27,7 +27,7 @@
 
                   <div class="form-outline mb-4">
                     <label asp-for="Password" class="form-label"></label>
-                    <input asp-for="Password" type="password" class="form-control form-control-lg" />
+                    <input asp-for="Password" type="password" class="form-control form-control-lg"/>
                     <div class="mt-2" style="height: 2px;">
                       <span asp-validation-for="Password" class="text-danger" style="height: 10px;"></span>
                     </div>
@@ -41,12 +41,11 @@
                     </p>
 
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show mt-3"
-                      role="alert">
+                         role="alert">
                       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     @{
-                      if (TempData["SuccessMessage"] != null)
-                      {
+                      if (TempData["SuccessMessage"] != null) {
                         <div class="alert alert-success alert-dismissible fade show w-75 mx-auto" role="alert">
                           @TempData["SuccessMessage"]
                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -54,14 +53,14 @@
                       }
                     }
                     @{
-                      if (TempData["ErrorMessage"] != null)
-                      {
+                      if (TempData["ErrorMessage"] != null) {
                         <div class="alert alert-danger alert-dismissible fade show w-75 mx-auto" role="alert">
                           @TempData["ErrorMessage"]
                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                       }
                     }
+                  </div>
                 </form>
               </div>
             </div>

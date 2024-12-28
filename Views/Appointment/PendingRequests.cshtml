@@ -15,37 +15,34 @@
                         <div class="table-responsive">
                             <table class="table table-bordered text-center text-light">
                                 <thead style="background-color: #525252;">
-                                    <tr>
-                                        <th>Client</th>
-                                        <th>Date & Time</th>
-                                        <th>Service</th>
-                                        <th>Action</th>
-                                    </tr>
+                                <tr>
+                                    <th>Client</th>
+                                    <th>Date & Time</th>
+                                    <th>Service</th>
+                                    <th>Action</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    @if (Model.Any())
-                                    {
-                                        @foreach (var appointment in Model)
-                                        {
-                                            <tr>
-                                                <td>@appointment.User?.Username</td>
-                                                <td>@appointment.AppointmentDate.ToString("MMM dd, yyyy HH:mm")</td>
-                                                <td>@appointment.Service?.Name</td>
-                                                <td>
-                                                    <form asp-action="ConfirmAppointment" method="post">
-                                                        <input type="hidden" name="appointmentId" value="@appointment.Id" />
-                                                        <button type="submit" class="btn" style="background-color: #EB975E;">Confirm</button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        }
-                                    }
-                                    else
-                                    {
+                                @if (Model.Any()) {
+                                    @foreach (var appointment in Model) {
                                         <tr>
-                                            <td colspan="4" class="text-center">No pending appointments found.</td>
+                                            <td>@appointment.User?.Username</td>
+                                            <td>@appointment.AppointmentDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                            <td>@appointment.Service?.Name</td>
+                                            <td>
+                                                <form asp-action="ConfirmAppointment" method="post">
+                                                    <input type="hidden" name="appointmentId" value="@appointment.Id"/>
+                                                    <button type="submit" class="btn" style="background-color: #EB975E;">Confirm</button>
+                                                </form>
+                                            </td>
                                         </tr>
                                     }
+                                }
+                                else {
+                                    <tr>
+                                        <td colspan="4" class="text-center">No pending appointments found.</td>
+                                    </tr>
+                                }
                                 </tbody>
                             </table>
                         </div>
@@ -55,8 +52,7 @@
                                class="btn btn-lg" style="background-color: #EB975E;">Back to Dashboard</a>
                         </div>
 
-                        @if (TempData["SuccessMessage"] != null)
-                        {
+                        @if (TempData["SuccessMessage"] != null) {
                             <div class="alert alert-success alert-dismissible fade show w-75 mx-auto mt-3" role="alert">
                                 @TempData["SuccessMessage"]
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

@@ -9,13 +9,11 @@ namespace backend.Controllers;
 [Authorize(Roles = "Admin")]
 [Route("/panel/[controller]")]
 public class SalonController(ApplicationDbContext context) : Controller {
-    private readonly ApplicationDbContext _context = context;
-
     public async Task<IActionResult> Index() {
         try {
-            var salons = await _context.Salons.ToListAsync();
+            var salons = await context.Salons.ToListAsync();
             return View(salons);
-        } catch (Exception) {
+        } catch {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
             return View();
         }
@@ -30,15 +28,14 @@ public class SalonController(ApplicationDbContext context) : Controller {
     [Route("Create")]
     [HttpPost]
     public async Task<IActionResult> Create(Salon salon) {
-        if (ModelState.IsValid) {
-            try {
-                _context.Salons.Add(salon);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Salon created successfully!";
-                return RedirectToAction(nameof(Index));
-            } catch (Exception) {
-                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
-            }
+        if (!ModelState.IsValid) return View(salon);
+        try {
+            context.Salons.Add(salon);
+            await context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Salon created successfully!";
+            return RedirectToAction(nameof(Index));
+        } catch {
+            ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
         }
         return View(salon);
     }
@@ -47,10 +44,10 @@ public class SalonController(ApplicationDbContext context) : Controller {
     [HttpGet]
     public async Task<IActionResult> Edit(int id) {
         try {
-            var salon = await _context.Salons.FindAsync(id);
+            var salon = await context.Salons.FindAsync(id);
             if (salon == null) return NotFound();
             return View(salon);
-        } catch (Exception) {
+        } catch {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
             return View();
         }
@@ -62,10 +59,10 @@ public class SalonController(ApplicationDbContext context) : Controller {
         if (!ModelState.IsValid) return View(salon);
 
         try {
-            var existingSalon = await _context.Salons.FindAsync(salon.Id);
+            var existingSalon = await context.Salons.FindAsync(salon.Id);
             if (existingSalon == null) return NotFound();
 
-            bool hasChanges = existingSalon?.Name?.Equals(salon.Name) == false ||
+            var hasChanges = existingSalon?.Name?.Equals(salon.Name) == false ||
                             existingSalon?.Address?.Equals(salon.Address) == false ||
                             existingSalon?.PhoneNumber?.Equals(salon.PhoneNumber) == false ||
                             existingSalon?.Email?.Equals(salon.Email) == false ||
@@ -77,12 +74,12 @@ public class SalonController(ApplicationDbContext context) : Controller {
                 return RedirectToAction(nameof(Index));
             }
 
-            if (existingSalon != null) _context.Entry(existingSalon).CurrentValues.SetValues(salon);
-            await _context.SaveChangesAsync();
+            if (existingSalon != null) context.Entry(existingSalon).CurrentValues.SetValues(salon);
+            await context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Salon updated successfully!";
             return RedirectToAction(nameof(Index));
-        } catch (Exception) {
+        } catch {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
             return View(salon);
         }
@@ -92,10 +89,10 @@ public class SalonController(ApplicationDbContext context) : Controller {
     [HttpGet]
     public async Task<IActionResult> Delete(int id) {
         try {
-            var salon = await _context.Salons.FindAsync(id);
+            var salon = await context.Salons.FindAsync(id);
             if (salon == null) return NotFound();
             return View(salon);
-        } catch (Exception) {
+        } catch {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
             return View();
         }
@@ -105,7 +102,7 @@ public class SalonController(ApplicationDbContext context) : Controller {
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id) {
         try {
-            var salon = await _context.Salons
+            var salon = await context.Salons
                 .Include(s => s.Services)
                 .Include(s => s.Employees)
                 .FirstOrDefaultAsync(s => s.Id == id);
@@ -115,20 +112,22 @@ public class SalonController(ApplicationDbContext context) : Controller {
             if (salon.Services.Count > 0 && salon.Employees.Count > 0) {
                 TempData["InfoMessage"] = "Cannot delete salon because it has associated services and employees.";
                 return RedirectToAction(nameof(Index));
-            } else if (salon.Services.Count > 0) {
+            } 
+            if (salon.Services.Count > 0) {
                 TempData["InfoMessage"] = "Cannot delete salon because it has associated services.";
                 return RedirectToAction(nameof(Index));
-            } else if (salon.Employees.Count > 0) {
+            }
+            if (salon.Employees.Count > 0) {
                 TempData["InfoMessage"] = "Cannot delete salon because it has associated employees.";
                 return RedirectToAction(nameof(Index));
             }
 
-            _context.Salons.Remove(salon);
-            await _context.SaveChangesAsync();
+            context.Salons.Remove(salon);
+            await context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Salon has been deleted successfully!";
             return RedirectToAction(nameof(Index));
-        } catch (Exception) {
+        } catch {
             ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
             return View();
         }
