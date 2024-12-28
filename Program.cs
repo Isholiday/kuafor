@@ -36,7 +36,8 @@ builder.Services.AddAuthentication(options => {
 });
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<JwtService>();
-
+builder.Services.AddScoped<ReplicateService>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

@@ -52,15 +52,32 @@
               </div>
             </form>
 
-            @if (Model.HasResult)
+            @if (!string.IsNullOrEmpty(Model.RecommendationTextResult))
             {
               <h4 class="my-4 text-center" style="color: #EB975E;">Your Recommendations</h4>
-              <div style="max-height: calc(100vh - 600px); overflow-y: auto;">
-                <div class="card" style="background-color: #525252;">
+              <div style="max-height: calc(100vh - 450px); overflow-y: auto; overflow-x: hidden;">
+                <div class="card mb-4" style="background-color: #525252;">
                   <div class="card-body">
-                    <p class="text-light fs-5">@Model.RecommendationResult</p>
+                    <p class="text-light fs-5">@Model.RecommendationTextResult</p>
                   </div>
                 </div>
+                @if (Model.RecommendationImageResults?.Any() == true)
+                {
+                  <div class="row g-4">
+                    @foreach (var imageUrl in Model.RecommendationImageResults)
+                    {
+                      <div class="col-md-4">
+                        <div class="card h-100" style="background-color: #525252;">
+                          <div class="card-body text-center">
+                            <h5 class="card-title text-light mb-3">Style Option</h5>
+                            <img src="@imageUrl" alt="AI Generated Hairstyle" class="img-fluid rounded"
+                              style="max-height: 300px; object-fit: cover;" />
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
               </div>
             }
           </div>

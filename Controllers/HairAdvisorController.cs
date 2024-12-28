@@ -1,3 +1,4 @@
+using backend.Services;
 using backend.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,9 +8,9 @@ namespace backend.Controllers;
 
 [Authorize(Roles = "User,Admin")]
 [Route("/Dashboard/[controller]")]
-public class HairAdvisorController(IConfiguration configuration) : Controller {
-
+public class HairAdvisorController(IConfiguration configuration, ReplicateService replicateService) : Controller {
     private readonly string _apiKey = configuration["OpenAI:ApiKey"] ?? throw new InvalidOperationException("OpenAI API key not found in configuration");
+    private readonly ReplicateService _replicateService = replicateService;
 
     [HttpGet]
     public IActionResult Index() {
@@ -24,7 +25,7 @@ public class HairAdvisorController(IConfiguration configuration) : Controller {
                 return View(nameof(Index), model);
             }
 
-            string[] allowedTypes = { "image/jpeg", "image/jpg", "image/png" };
+            string[] allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
             if (!allowedTypes.Contains(model.Photo.ContentType.ToLower())) {
                 ModelState.AddModelError(string.Empty, "Please upload a valid image file (jpg, jpeg, or png)");
                 return View(nameof(Index), model);
@@ -47,13 +48,16 @@ public class HairAdvisorController(IConfiguration configuration) : Controller {
                 MaxOutputTokenCount = 256,
             }
             );
-            model.RecommendationResult = chatCompletion.Content[0].Text;
+            model.RecommendationTextResult = chatCompletion.Content[0].Text;
+            model.RecommendationImageResults = await _replicateService
+           .GenerateHairStyles(imageData, $"Professional male headshot portrait photo, centered composition, head and shoulders view, {chatCompletion.Content[0].Text}, studio lighting, high-end salon photography, clear facial details, professional hairstyling, modern fashion photography style");
+
             return View(nameof(Index), model);
         } catch (UriFormatException) {
             ModelState.AddModelError(string.Empty, "The uploaded image is too large. Please upload a smaller image.");
             return View(nameof(Index), model);
         } catch (Exception) {
-            ModelState.AddModelError(string.Empty, "An error occurred while processing your request");
+            ModelState.AddModelError(string.Empty, $"An error occurred while procsessing your request");
             return View(nameof(Index), model);
         }
     }

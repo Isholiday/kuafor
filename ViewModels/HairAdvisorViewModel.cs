@@ -8,7 +8,7 @@ public class HairAdvisorViewModel {
     public IFormFile? Photo { get; set; }
 
     [Display(Name = "AI Recommendations")]
-    public string? RecommendationResult { get; set; }
+    public string? RecommendationTextResult { get; set; }
 
-    public bool HasResult => !string.IsNullOrEmpty(RecommendationResult);
+    public List<string>? RecommendationImageResults { get; set; }
 }
